@@ -1,2 +1,6 @@
-[webserver]
+[Apache-webserver]
 webserver1 ansible_host=192.168.29.18 ansible_connection=ssh ansible_port=22 ansible_user=admin
+
+[Nginx-server]
+webserver2 ansible_host=192.168.29.18 ansible_connection=ssh ansible_port=22 ansible_user=admin
+
