@@ -1,0 +1,22 @@
+server {
+	listen 80;
+	listen [::]:80;
+	server_name  {{ server_name }} {{ server_alias }};
+	return 301 https://{{ server_name }};
+}
+
+server {
+	listen 443 ssl;
+	server_name {{ server_name }} {{ server_alias }};
+    	index index.html;
+	ssl_certificate {{ paths.ssl_crt }};
+        ssl_certificate_key {{ paths.ssl_key }};
+	location / {
+		root {{ paths.doc_root }};
+	}
+	access_log /var/log/nginx/access.log;
+	error_log /var/log/nginx/error.log;
+}
+
+
+
