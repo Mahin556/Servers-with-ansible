@@ -9,14 +9,17 @@
       pkgs:
         - httpd
         - mod_ssl
+        - firewalld
       srv:
         - httpd
+        - firewalld
     paths:
       doc_root: /var/www/html
-      ssl_key: /etc/pki/tls/private/
-      ssh_crt: /etc/pki/tls/certs
+      ssl_key: /etc/pki/tls/private/{{ cert_org_name }}.key
+      ssl_crt: /etc/pki/tls/certs/{{ cert_org_name }}.crt
     cert_common_name: webfix.com
     cert_org_name: webfix
+
   tasks:
   - name: Installing a required packages
     yum:
@@ -24,7 +27,69 @@
       state: present
     loop: "{{ server.pkgs }}"
 
-  - name: Generating a private key for the {{ server_name }}
+  - name: "Generating a private key for the {{ server_name }}"
     community.crypto.openssl_privatekey:
+      path: "{{ paths.ssl_key }}"
+      mode: "0640"
+      type: RSA
+      size: 2048
+      state: present
+  
+  - name: "Generating a Certificate Signing Request(CSR) for self signed certificate"
+    community.crypto.openssl_csr_pipe:
+      privatekey_path: "{{ paths.ssl_key }}"
+      common_name: "{{ cert_common_name }}"
+      organization_name: "{{ cert_org_name }}"
+    register: csr
+
+  - name: "Generating a self-signed certificate for {{ cert_common_name }}"
+    community.crypto.x509_certificate:
+      path: "{{ paths.ssl_crt }}"
+      privatekey_path: "{{ paths.ssl_key }}"
+      csr_content: "{{ csr.csr }}"
+      provider: selfsigned
+      selfsigned_not_after: "+365d" 
+      mode: "0644"
+      state: present
+
+  - name: "Preparing the configuration file for {{ cert_common_name }}"
+    template:
+      src: /root/mahin/Servers-with-ansible/apache-server/{{ cert_org_name }}.conf.j2
+      dest: /etc/httpd/conf.d/{{ cert_org_name }}.conf
+
+  - name: "Ensuring the document root exists"
+    file:
+      path: "{{ paths.doc_root }}"
+      state: directory
+      mode: "0755"
+
+  - name: "Preparing the index page"
+    template:
+      src: ./index.html.j2
+      dest: "{{ paths.doc_root }}/index.html"
+    
+  - name: "Starting and enabling the {{ server.srv }} service"
+    service:
+      name: "{{ item }}"
+      state: restarted
+      enabled: true
+    loop: "{{ server.srv }}"
+
+  - name: "Configuring a firewall rules"
+    firewalld:
+      service: "{{ item }}"
+      state: enabled
+      permanent: true
+      immediate: true
+    loop:
+      - http
+      - https
+
+  - name: Making SELinux State Permissive
+    selinux:
+      policy: targeted
+      state: permissive
+
+
 
     

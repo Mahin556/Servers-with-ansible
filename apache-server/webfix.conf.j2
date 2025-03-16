@@ -1,0 +1,19 @@
+<virtualhost *:80>
+    servername  {{ server_name }}
+    serveralias {{ server_alias }}
+    redirect permanent / https://{{ server_name }}
+</virtualhost>
+<VirtualHost *:443>
+    ServerName {{ server_name }}
+    ServerAlias {{ server_alias }}
+    DocumentRoot {{ paths.doc_root }}
+    SSLEngine on
+    SSLCertificateFile {{ paths.ssl_crt }}
+    SSLCertificateKeyFile {{ paths.ssl_key }}
+    <Directory {{ paths.doc_root }}>
+        DirectoryIndex index.html
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+
