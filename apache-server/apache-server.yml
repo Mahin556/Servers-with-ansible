@@ -10,6 +10,7 @@
         - httpd
         - mod_ssl
         - firewalld
+        - python2-pip
       srv:
         - httpd
         - firewalld
@@ -26,6 +27,10 @@
       name: "{{ item }}"
       state: present
     loop: "{{ server.pkgs }}"
+  
+  - name: "Installing a cryptography module"
+    ansible.builtin.pip:
+      name: cryptography
 
   - name: "Generating a private key for the {{ server_name }}"
     community.crypto.openssl_privatekey:
