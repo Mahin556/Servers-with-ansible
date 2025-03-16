@@ -1,0 +1,30 @@
+---
+- name: Configuring a webserver and hosting a webpage on it
+  hosts: apache
+  become: true
+  vars:
+    server_name: webfix.com
+    server_alias: www.webfix.com
+    server:
+      pkgs:
+        - httpd
+        - mod_ssl
+      srv:
+        - httpd
+    paths:
+      doc_root: /var/www/html
+      ssl_key: /etc/pki/tls/private/
+      ssh_crt: /etc/pki/tls/certs
+    cert_common_name: webfix.com
+    cert_org_name: webfix
+  tasks:
+  - name: Installing a required packages
+    yum:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ server.pkgs }}"
+
+  - name: Generating a private key for the {{ server_name }}
+    community.crypto.openssl_privatekey:
+
+    
