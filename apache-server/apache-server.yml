@@ -10,7 +10,7 @@
         - httpd
         - mod_ssl
         - firewalld
-        - python2-pip
+        - python3-pip
       srv:
         - httpd
         - firewalld
