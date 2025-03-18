@@ -1,29 +1,35 @@
 - listening_port: 53
 
 - pkgs:
-  - master:
+    master:
     - bind
     - bind-utils
     - firewalld
-  - slave:
+    slave:
     - bind
     - bind-utils
     - firewalld
-  - cache:
+    cache:
     - unbound
     - firewalld
 
 - srvs:
-  - master:
+    master:
     - named
     - firewalld
-  - slave:
+    slave:
     - named
     - firewalld
-  - cache:
+    cache:
     - unbound
     - firewalld
 
 - conf_dir: /etc
+
 - zone_directory: "/var/named"
+
 - slv_zone_dir: "slaves/" 
+
+- unbound_conf_dir: "/var/unbound"
+
+
