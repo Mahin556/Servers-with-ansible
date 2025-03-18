@@ -1,17 +1,17 @@
 
-[master-dns]
+[master_dns]
 system1
 
-[slave-dns]
+[slave_dns]
 system2
 
-[cache-dns]
+[cache_dns]
 system3
 
-[dns-servers:children]
-master-dns
-slave-dns
-cache-dns
+[dns_servers:children]
+master_dns
+slave_dns
+cache_dns
 
 [apache]
 system5 ansible_host=192.168.29.18 ansible_connection=ssh ansible_port=22 ansible_user=admin
