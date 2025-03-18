@@ -10,10 +10,11 @@
     - 192.168.29.0/24
 
 - allow_transfer: #list
-    - none
+    - localhost
+    - 192.168.29.166
 
 - allow_update: #list
-    - none
+    - 192.168.29.166
 
 - recursive: "yes" #yes or no only
 
@@ -26,6 +27,7 @@
     retry: 300
     expire: 1D
     minimum: 3H
+    type: master
     ns:
       - name: ns1.webfix.com
     mx:
@@ -50,6 +52,7 @@
     retry: 300
     expire: 1D
     minimum: 3H
+    type: master
     ns:
       - name: ns1.tctech.com
     mx:
@@ -66,7 +69,7 @@
         type: "A"
         value: "192.168.29.206"
 
-- notify_on: "no"
+- notify_on: "yes"
 
 
 

@@ -59,7 +59,8 @@ zone "." IN {
 {% for zone in zones %}
 zone "{{ zone.name }}" IN {
 	type {{ zone.type }};
-	file "forward-{{ zone.name }}";
+	file "{{ slv_zone_dir}}/forward-{{ zone.name }}";
+	masters { {{ zone.master }}; };
 	notify {{ notify_on }};
 }; 
 

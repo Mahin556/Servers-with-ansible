@@ -1,28 +1,20 @@
 ---
-- name: Configuring a master DNS server using a BIND
-  hosts: master_dns 
+- name: Configuring a Slave bind DNS server
+  hosts: slave_dns
   vars_files:
-    - master-vars.yml
-    - defaults.yml
+    - ./defaults.yml
+    - ./slave-vars.yml
   tasks:
   - name: Installing a Required packages
-    yum: 
+    yum:
       name: "{{ item }}"
       state: present
     loop: "{{ pkgs }}"
 
   - name: Configuring a configuration file
     template:
-      src: ./master-named.conf.j2
+      src: ./slave-named.conf.j2
       dest: "{{ conf_dir }}/named.conf"
-  
-  - name: configuring a zone file
-    template:
-      src: ./forward-zone.j2
-      dest: "{{ zone_directory }}/forward-{{ item.name }}"
-      mode: "0740"
-      group: named
-    loop: "{{ zones }}"
 
   - name: Configuring a SELINUX
     selinux:
@@ -42,6 +34,4 @@
       permanent: true
       state: enabled
       immediate: true
-
-
 
