@@ -2,11 +2,12 @@
 - name: Configuring a client machine to become a authrative DNS server client
   hosts: all
   vars:
-    a_dns_ip: 192.168.29.228
+    auth_dns_ip: 192.168.29.228
+    slv_dns_ip: 192.168.29.166
     resolver_file: "/etc/resolv.conf"
   tasks:
     - name: configuring a resolve.conf file
       copy:
-        content: "nameserver {{ a_dns_ip }}"
+        content: "nameserver {{ auth_dns_ip }}\nnameserver {{ slv_dns_ip }}"
         dest: "{{ resolver_file }}"
         mode: "0644"
