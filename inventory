@@ -1,6 +1,21 @@
+
+[master-dns]
+system1
+
+[slave-dns]
+system2
+
+[cache-dns]
+system3
+
+[dns-servers:children]
+master-dns
+slave-dns
+cache-dns
+
 [apache]
-webserver1 ansible_host=192.168.29.18 ansible_connection=ssh ansible_port=22 ansible_user=admin
+system5 ansible_host=192.168.29.18 ansible_connection=ssh ansible_port=22 ansible_user=admin
 
 [nginx]
-webserver2 ansible_host=192.168.29.206 ansible_connection=ssh ansible_port=22 ansible_user=admin
+system4 ansible_host=192.168.29.206 ansible_connection=ssh ansible_port=22 ansible_user=admin
 
