@@ -7,8 +7,6 @@
 - ipv6_interfaces: #list
     - ::1
 
-- zone_directory: "/var/named"
-
 - allow_query: #list
     - localhost
     - 192.168.29.0/24
@@ -19,49 +17,58 @@
 - allow_update: #list
     - none
 
-- recursive: "no" #yes or no only
+- recursive: "yes" #yes or no only
 
 - zones: #list
   - name: webfix.com
-    ttl: "1H"
+    ttl: 1H
     soa: "ns1.webfix.com"
     serial: 100
-    refresh: "1H"
+    refresh: 1H
     retry: 300
-    expire: "1D"
-    minimum: "3H"
+    expire: 1D
+    minimum: 3H
     ns:
       - name: ns1.webfix.com
-      - name: ns2.webfix.com
     mx:
       - name: mx1.webfix.com
-        priprity: 10
+        priority: 10
     records:
+      - name: "ns1"
+        type: "A"
+        value: "192.168.29.18"
+      - name: "mx1"
+        type: "A"
+        value: "192.168.29.18"
       - name: "www"
         type: "A"
         value: "192.168.29.18"
-    
+
   - name: tctech.com
-    ttl: "1H"
+    ttl: 1H
     soa: "ns1.tctech.com"
     serial: 100
-    refresh: "1H"
+    refresh: 1H
     retry: 300
-    expire: "1D"
-    minimum: "3H"
+    expire: 1D
+    minimum: 3H
     ns:
       - name: ns1.tctech.com
-      - name: ns2.tctech.com
     mx:
       - name: mx1.tctech.com
-        priprity: 10
+        priority: 10
     records:
+      - name: "ns1"
+        type: "A"
+        value: "192.168.29.206"
+      - name: "mx1"
+        type: "A"
+        value: "192.168.29.206"
       - name: "www"
         type: "A"
         value: "192.168.29.206"
 
 - notify_on: "no"
 
-- records:
 
 

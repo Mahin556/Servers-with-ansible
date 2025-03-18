@@ -3,15 +3,45 @@
   hosts: master_dns 
   vars_files:
     - master-dns-vars.yml
+    - defaults.yml
   tasks:
-  - name: COnfiguring a configuration file
+  - name: Installing a Required packages
+    yum: 
+      name: "{{ item }}"
+      state: present
+    loop: "{{ pkgs }}"
+
+  - name: Configuring a configuration file
     template:
       src: ./master-named.conf.j2
-      dest: /home/admin
+      dest: "{{ conf_dir }}/named.conf"
+  
   - name: configuring a zone file
     template:
       src: ./forward-zone.j2
-      dest: /home/admin/forward-{{ item.name }}
+      dest: "{{ zone_directory }}/forward-{{ item.name }}"
+      mode: "0740"
+      group: named
     loop: "{{ zones }}"
+
+  - name: Configuring a SELINUX
+    selinux:
+      policy: targeted
+      state: permissive
+
+  - name: Starting a services
+    service:
+      name: "{{ item }}"
+      state: restarted
+      enabled: true
+    loop: "{{ srvs }}"
+
+  - name: Configuring a firewalle rules
+    firewalld:
+      service: dns
+      permanent: true
+      state: enabled
+      immediate: true
+
 
 

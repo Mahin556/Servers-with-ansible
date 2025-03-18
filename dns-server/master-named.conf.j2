@@ -51,7 +51,7 @@ logging {
         };
 };
 
-zone "." IN {`
+zone "." IN {
 	type hint;
 	file "named.ca";
 };
@@ -59,7 +59,7 @@ zone "." IN {`
 {% for zone in zones %}
 zone "{{ zone.name }}" IN {
 	type master;
-	file forward-{{ zone.name }};
+	file "forward-{{ zone.name }}";
 	notify {{ notify_on }};
 }; 
 

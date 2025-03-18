@@ -1,4 +1,3 @@
-$ORIGIN	{{ item.name }}
 $TTL {{ item.ttl | default('86400') }}
 @	IN SOA	{{ item.soa|default('localhost') }}. hostmaster.{{ item.name }}. (
 					{{ item.serial|default('1') }}	; serial
@@ -22,6 +21,7 @@ $TTL {{ item.ttl | default('86400') }}
 {% if item.records is defined %}
 {% for record in item.records %}
 {{ record.name }}	IN	{{ record.type|default('A') }}	{{ record.value }} {% if record.type == "CNAME" %}.{% endif %}
+
 {% endfor %}
 {% endif %}
 

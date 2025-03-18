@@ -1,0 +1,13 @@
+- pkgs:
+  - bind
+  - bind-utils
+  - firewalld
+
+- srvs:
+  - named
+  - firewalld
+
+- conf_dir: /etc
+
+- zone_directory: "/var/named"
+ 
