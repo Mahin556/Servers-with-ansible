@@ -1,0 +1,13 @@
+---
+- name: Configuring a cache server
+  hosts: cache_dns
+  vars_files:
+    - ./defaults.yml
+  tasks:
+    - name: Installing required packages
+      yum:
+        - name: "{{ item }}"
+          state: present
+      loop: "{{ pkgs.cache }}"
+
+    - name: 

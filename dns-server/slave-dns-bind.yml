@@ -9,7 +9,7 @@
     yum:
       name: "{{ item }}"
       state: present
-    loop: "{{ pkgs }}"
+    loop: "{{ pkgs.slave }}"
 
   - name: Configuring a configuration file
     template:
