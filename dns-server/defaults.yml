@@ -1,3 +1,5 @@
+- listening_port: 53
+
 - pkgs:
   - bind
   - bind-utils
