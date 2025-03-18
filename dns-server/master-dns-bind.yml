@@ -1,0 +1,17 @@
+---
+- name: Configuring a master DNS server using a BIND
+  hosts: master_dns 
+  vars_files:
+    - master-dns-vars.yml
+  tasks:
+  - name: COnfiguring a configuration file
+    template:
+      src: ./master-named.conf.j2
+      dest: /home/admin
+  - name: configuring a zone file
+    template:
+      src: ./forward-zone.j2
+      dest: /home/admin/forward-{{ item.name }}
+    loop: "{{ zones }}"
+
+
