@@ -6,7 +6,7 @@
 #
 /misc	/etc/auto.misc
 {% for mount in mounts %}
-{{ mount.mount_dir }} {{ mount.mount_point }}.misc  timeout={{ mount.timeout }}
+{{ mount.mount_dir }} /etc/{{ mount.mount_point }}.misc  timeout={{ mount.timeout }}
 {% endfor %}
 
 #
