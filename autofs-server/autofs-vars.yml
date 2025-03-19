@@ -1,0 +1,12 @@
+- srvs:
+  - autofs
+  - firewalld
+
+- mounts:
+  - mount_dir: "/mount_dir"
+    mount_point: "mount_point"
+    timeout: "30"
+    perms: "rw"
+    nfs_server: "system1"
+    nfs_share: "/nfs_share"
+
