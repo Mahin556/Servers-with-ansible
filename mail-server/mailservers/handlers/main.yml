@@ -1,0 +1,43 @@
+---
+# handlers file for postfix
+
+- name: SERVICE
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+  loop: "{{ srvs }}"
+
+- name: FIREWALL
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    immediate: true
+    permanent: true
+  loop:
+    - smtp
+    - pop3
+    - imap
+    - http
+    - https
+
+- name: SELINUX
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: SECONTEXT
+  sefcontext:
+    target: /var/www/html/webmail/*
+    setype: httpd_sys_rw_content_t
+
+- name: SEBOOL
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+
+- name: RESTORECON
+  shell: "restorecon -Rv /var/www/html/webmail"
+
+

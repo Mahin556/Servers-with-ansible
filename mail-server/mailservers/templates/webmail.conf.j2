@@ -1,0 +1,20 @@
+<virtualhost *:443> 
+servername webmail.com
+serveralias www.webmail.com
+documentroot /var/www/html/webmail 
+sslengine on
+sslcertificatefile /etc/pki/tls/certs/webmail.crt 
+sslcertificatekeyfile /etc/pki/tls/private/webmail.key
+alias /webmail /var/www/html/webmail 
+<directory /var/www/html/webmail> 
+options indexes followsymlinks  
+allowoverride all
+require all granted
+directoryindex index.php 
+</directory>
+</virtualhost>
+<virtualhost *:80>
+servername webmail.com
+serveralias www.webmail.com
+redirect permanent / https://webmail.com
+</virtualhost>

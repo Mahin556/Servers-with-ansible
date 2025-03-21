@@ -1,0 +1,5 @@
+---
+- name: configuring a mail server
+  hosts: system1
+  roles:
+    - /root/mahin/Servers-with-ansible/mail-server/mailservers

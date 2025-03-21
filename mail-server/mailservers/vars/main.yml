@@ -1,0 +1,44 @@
+---
+# vars file for postfix
+
+pkgs:
+  - postfix
+  - dovecot
+  - telnet
+  - httpd
+  - php
+  - php-gd
+  - php-mysqlnd
+  - php80-php-imap
+  - python3-pip
+
+srvs:
+  - postfix
+  - dovecot
+  - php-fpm
+  - firewalld
+  - httpd
+
+postfix:
+  mail_fqdn: "mail.webmail.com"
+  mail_domain: "webmail.com"
+  interfaces:
+    - localhost
+    - "{{ ansible_facts['default_ipv4']['address'] }}"
+  networks:
+    - 192.168.29.0/24
+    - 127.0.0.0/8
+  relay_domain: "tctech.com"
+  relay_host: "main.tctech.com"
+  relay_port: "25"
+
+dovecot:
+  main_dir: "maildir:~/Maildir"
+  protocols:
+    - pop3
+    - imap
+    - lmtp
+  disable_planetext_auth: "yes" 
+  
+squirrelmail:
+  domain: "webmail.com"

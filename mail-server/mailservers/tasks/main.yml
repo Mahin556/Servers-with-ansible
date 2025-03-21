@@ -1,0 +1,120 @@
+- name: CONFIGURING A EPEL AND REMI REPO
+  include_tasks: repo-config.yml  
+
+- name: INSTALLING A REQUIRED PACKAGES
+  yum: 
+    name: "{{ item }}" 
+    state: present
+  loop: "{{ pkgs }}"
+
+- name: "Installing a cryptography module"
+  ansible.builtin.pip:
+    name: cryptography
+
+- name: TEMPLATING A J2 FILE
+  template:
+    src: main.cf.j2
+    dest: /etc/postfix/main.cf
+
+- name: TEMPLATING A DOVECOT SERVER
+  template:
+    src: dovecot.conf.j2
+    dest: /etc/dovecot/dovecot.conF
+
+- name: TEMPLATING A 10-MAIL FILE
+  template:
+    src: 10-mail.conf.j2
+    dest: /etc/dovecot/conf.d/10-mail.conf
+
+- name: TAMPLATING A 10-AUTH FILE
+  template:
+    src: 10-auth.conf.j2
+    dest: /etc/dovecot/conf.d/10-auth.conf
+
+- name: TEMPLATING A 10-MASTER FILE
+  template:
+    src: 10-master.conf.j2
+    dest: /etc/dovecot/conf.d/10-master.conf
+
+      #- name: DOWNLOADING A SQUIRRELMAIL FROM INTERNET
+      #get_url:
+      #url: https://squirrelmail.org/countdl.php?fileurl=http%3A%2F%2Fsnapshots.squirrelmail.org%2Fsquirrelmail-20250320_0200-SVN.stable.tar.gz
+      #dest: /var/www/html/webmail.tar.gz
+
+- name: 
+  file:
+    path: /var/www/html/webmail
+    state: directory
+
+- name: Unarchinve the webmail.tar.gz
+  unarchive:
+    src: https://squirrelmail.org/countdl.php?fileurl=http%3A%2F%2Fsnapshots.squirrelmail.org%2Fsquirrelmail-20250320_0200-SVN.stable.tar.gz
+    dest: /var/www/html/
+    remote_src: yes
+    creates: "/var/www/html/squirrelmail.stable/"
+
+- name: CONFIGURING A SQUIRRELMAIL
+  copy:
+    src: /var/www/html/squirrelmail.stable/squirrelmail/
+    dest: /var/www/html/webmail
+    remote_src: yes
+
+- name: configuring a apache server
+  template:
+    src: webmail.conf.j2
+    dest: /etc/httpd/conf.d/webmail.conf
+
+- name: 
+  template:
+    src: config.php.j2
+    dest: /var/www/html/webmail/config/config.php 
+
+- name: "Generating a private key"
+  community.crypto.openssl_privatekey:
+    path: /etc/pki/tls/private/webmail.key
+    mode: "0640"
+    type: RSA
+    size: 2048
+    state: present
+  
+- name: "Generating a Certificate Signing Request(CSR) for self signed certificate"
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: /etc/pki/tls/private/webmail.key
+    common_name: "webmail.com"
+    organization_name: "webmail"
+  register: csr
+
+- name: "Generating a self-signed certificate for {{ cert_common_name }}"
+  community.crypto.x509_certificate:
+    path: /etc/pki/tls/certs/webmail.crt
+    privatekey_path: /etc/pki/tls/private/webmail.key
+    csr_content: "{{ csr.csr }}"
+    provider: selfsigned
+    selfsigned_not_after: "+365d" 
+    mode: "0644"
+    state: present
+
+- name: Creating a required directory
+  file:
+    path: /var/www/html/webmail/attach
+    state: directory
+
+- name: Changing the permission of the webmail directory
+  file:
+    path: /var/www/html/webmail
+    mode: "0775"
+    owner: apache
+    group: apache
+    recurse: yes
+    state: directory
+  notify:
+    - SECONTEXT
+    - SEBOOL
+    - RESTORECON
+    - SELINUX
+    - SERVICE
+    - FIREWALL
+
+
+   
+ 

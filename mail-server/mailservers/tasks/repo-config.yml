@@ -1,0 +1,26 @@
+--- 
+- name: task1 
+  template:
+    src: epel.repo.j2 
+    dest: /etc/yum.repos.d/epel.repo
+- name: task2
+  template:
+    src: epel-cisco-openh264.repo.j2 
+    dest: /etc/yum.repos.d/epel-cisco-openh264
+- name: task3
+  template:
+    src: epel-testing.repo.j2
+    dest: /etc/yum.repos.d/epel-testing.repo
+- name: task4
+  template:
+    src: remi.repo.j2 
+    dest: /etc/yum.repos.d/remi.repo
+- name: task5
+  template:
+    src: remi-modular.repo.j2   
+    dest: /etc/yum.repos.d/remi-modular.repo
+- name: task6
+  template:
+    src: remi-safe.repo.j2 
+    dest: /etc/yum.repos.d/remi-safe.repo
+
