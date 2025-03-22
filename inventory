@@ -21,3 +21,16 @@ system5 ansible_host=192.168.29.18 ansible_connection=ssh ansible_port=22 ansibl
 [nginx]
 system4 ansible_host=192.168.29.206 ansible_connection=ssh ansible_port=22 ansible_user=admin
 
+[nis-server]
+nisSystem1 ansible_host=192.168.29.98
+[nis-client]
+nisSystem2 ansible_host=192.168.29.211
+[nis-slave]
+nisSystem3 ansible_host=192.168.29.110
+
+[nis-systems:children]
+nis-server
+nis-client
+nis-slave
+
+
