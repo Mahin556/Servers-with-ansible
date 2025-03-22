@@ -1,0 +1,16 @@
+---
+- name:
+  hosts: nis-systems
+  tasks:
+  - name: CONFIGURING A NIS-SERVER
+    include_role:
+      name: ./nis-server
+  - name: CONFIGURING A NIS-CLIENT
+    include_role:
+      name: ./nis-client
+  - name: CONFIGURING A NIS-SLAVE
+    include_role:
+      name: ./nis-slave
+
+
+
