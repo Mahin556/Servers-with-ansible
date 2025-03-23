@@ -1,2 +1,32 @@
 ---
-# handlers file for nis-server
+- name: restart ypserv
+  service: 
+    name: ypserv
+    state: restarted
+
+- name: restart nfs-server
+  service:
+    name: nfs-server
+    state: restarted
+
+- name: restart ypbind
+  service:
+    name: ypbind
+    state: restarted
+
+- name: restart rpcbind
+  service:
+    name: rpcbind
+    state: restarted
+
+- name: restart yppasswdd
+  service:
+    name: yppasswdd
+    state: restarted
+
+- name: restart xinetd
+  service:
+    name: xinetd
+    state: restarted
+
+

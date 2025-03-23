@@ -9,7 +9,9 @@
         - name: CONFIGURING A NIS-SERVER
           include_role:
             name: nis-server
+          when: inventory_hostname in groups['nis-server']
         - name: CONFIGURING A NIS-CLIENT
           include_role:
             name: nis-client
+          when: inventory_hostname in groups['nis-client']
       ignore_errors: true
