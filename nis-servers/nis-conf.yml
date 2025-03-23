@@ -4,14 +4,12 @@
   become: true
   tasks:
     - name: CONFIGURING A NIS
-      when: (ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat') and ansible_distribution_major_version == '7'
+      when: ( ansible_distribution | lower in ['centos','redhat'] ) and ansible_distribution_major_version == '7'
       block:
         - name: CONFIGURING A NIS-SERVER
           include_role:
             name: nis-server
-          ignore_errors: true
-        
         - name: CONFIGURING A NIS-CLIENT
           include_role:
             name: nis-client
-          ignore_errors: true
+      ignore_errors: true
