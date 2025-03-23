@@ -1,2 +1,25 @@
 ---
-# vars file for nis-client
+---
+pkgs:
+  - ypbind
+  - make
+  - autofs
+  - xinetd
+  - firewalld
+
+srvs:
+  - ypbind
+  - autofs
+  - firewalld
+
+nis_domain: "example.com"
+nis_client_hostname: "nisclient1.example.com"
+nis_server_domain: "nisserver.example.com"
+
+ypserv_port: "944"
+ypxfrd_port: "945"
+yppasswdd_port: "946"
+
+nis_secure_network:
+  network_address: "192.168.29.0"
+  subnet_mask: "255.255.255.0"

@@ -1,2 +1,61 @@
 ---
-# tasks file for nis-client
+- name: Installing a required packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pkgs }}"
+
+- name: Starting a services
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop: "{{ srvs }}"
+
+- name: Setting up a hostname
+  hostname:
+    name: "{{ nis_client_hostname }}"
+
+- name: Setting up a ypdomainname
+  command: "ypdomainname {{ nis_domain }}"  #domainname nis.example.com
+
+- name: Permanent network setup
+  template:
+    src: network.j2
+    dest: /etc/sysconfig/network
+    owner: root
+    group: root
+    mode: "0777"
+
+- name: hosts file
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+
+- name: Secure networks
+  template:
+    src: securenets.j2
+    dest: /var/yp/securenets
+    owner: root
+    group: root
+    mode: "0777"
+
+- name: modify /etc/nsswitch
+  template:
+    src: nsswitch.conf.j2
+    dest: /etc/nsswitch.conf
+    owner: root
+    group: root
+    mode: "0777"
+
+- name: client of nis-server
+  script: client.sh
+
+- name: Selinux ---> permissive
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: verify
+  command: "cat /etc/yp.conf"
+
