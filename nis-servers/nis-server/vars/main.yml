@@ -5,7 +5,7 @@ pkgs:
   - make
   - nfs-utils
   - xinetd
-OA
+
 nis_domain: "example.com"
 nis_server_hostname: "nisserver.{{ nis_domain }}"
 

@@ -1,15 +1,9 @@
 ---
----
 pkgs:
   - ypbind
   - make
   - autofs
   - xinetd
-  - firewalld
-
-srvs:
-  - ypbind
-  - autofs
   - firewalld
 
 nis_domain: "example.com"

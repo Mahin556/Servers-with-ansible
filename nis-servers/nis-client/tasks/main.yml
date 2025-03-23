@@ -10,7 +10,9 @@
     name: "{{ item }}"
     state: started
     enabled: true
-  loop: "{{ srvs }}"
+  loop: 
+    - autofs
+    - firewalld
 
 - name: Setting up a hostname
   hostname:
@@ -50,6 +52,7 @@
 
 - name: client of nis-server
   script: client.sh
+  notify: restart ypbind  
 
 - name: Selinux ---> permissive
   selinux:

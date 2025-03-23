@@ -1,2 +1,2 @@
-authconfig --enablenis --nisdomain={{ nis_domain }} {{ nis_server_domain }} --enablemkhomedir --update
+authconfig --enablenis --nisdomain=example.com  --nisserver=nisserver.example.com --enablemkhomedir --update
 
