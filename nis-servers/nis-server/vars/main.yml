@@ -4,11 +4,8 @@ pkgs:
   - rpcbind
   - make
   - nfs-utils
-  - ypbind
   - xinetd
-  - python3-pip
-  - python-setuptools
-
+OA
 nis_domain: "example.com"
 nis_server_hostname: "nisserver.{{ nis_domain }}"
 

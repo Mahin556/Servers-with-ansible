@@ -5,11 +5,6 @@
     state: present
   loop: "{{ pkgs }}"
 
-- name: INstall pexpect
-  pip:
-    name: pexpect
-    executable: pip3.6
-
 - name: Starting a services
   service:
     name: "{{ item }}"
@@ -20,7 +15,6 @@
     - nfs-server
     - rpcbind
     - yppasswdd
-    - ypbind
     - firewalld
     - xinetd
 
@@ -29,12 +23,15 @@
     name: "{{ nis_server_hostname }}"
 
 - name: Setting up a ypdomainname
-  command: "ypdomainname {{ nis_domain }}"
+  command: "ypdomainname {{ nis_domain }}"  #domainname nis.example.com
 
 - name: Permanent network setup
   template:
     src: network.j2
     dest: /etc/sysconfig/network
+    owner: root
+    group: root
+    mode: "0777"
 
 - name: hosts file
   template:
@@ -45,19 +42,30 @@
   template:
     src: securenets.j2
     dest: /var/yp/securenets
+    owner: root
+    group: root
+    mode: "0777"
 
-- name: Initializing a nis-server
-  expect:
-    command: /usr/lib64/yp/ypinit -m
-    responses:
-      "next host to add:": "{{ nis_server_hostname }}.{{ nis_domain }}"
-      "next host to add:": \400
-      "Is this correct\\? \\[y/n:\\]": "y"
-        #register: ypinit_output
-        #changed_when: "'failed' not in ypinit_output.stderr.lower()"
+- name: modify /etc/nsswitch
+  template:
+    src: nsswitch.conf.j2
+    dest: /etc/nsswitch.conf
+    owner: root
+    group: root
+    mode: "0777"
+
+- name: modify /etc/yp.conf
+  template: 
+    src: yp.conf.j2
+    dest: /etc/yp.conf
+    owner: root
+    group: root
+    mode: "0777"
+  notify: restart ypserv
       
-- name: Make NIS MAP
+- name: Make NIS MAP #MAKEFILE
   command: make -C /var/yp
+  changed_when: true
 
 - name: making a yppasswdd file
   template: 
