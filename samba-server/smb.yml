@@ -3,8 +3,9 @@
   hosts: smbserver, smbclient
   become: true
   tasks:
-    - name: configuring a smb server and client
-      include_role: samba
-
+    - name: configuring a smb server 
+      include_role: 
+        name: samba
+      when: inventory_hostname in groups['smbserver']
 
 
