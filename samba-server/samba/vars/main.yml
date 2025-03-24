@@ -1,0 +1,50 @@
+---
+pkgs:
+  - samba
+  - samba-common
+  - samba-client
+group:
+  - samba-group
+
+- user_accounts:
+  - { name: "smb-user1", group: "samba-group", passwd: "smb" }
+  - { name: "smb-user2", passwd: "smb" }
+
+
+    #[sharename] → Defines the name of the shared folder.
+    #path = /path/to/share → Sets the directory being shared.
+    #browseable = yes/no → Controls if the share is visible in network browsing.
+    #writeable = yes/no → Allows or denies writing to the shared folder.
+    #read only = yes/no → Alternative to writeable.
+    #valid users = user1, user2 → Lists users allowed to access the share.
+    #invalid users = user3, user4 → Denies specific users from accessing.
+    #guest ok = yes/no → Allows or denies guest access.
+    #create mask = 0755 → Defines file permissions for new files.
+    #directory mask = 0775 → Sets permissions for new directories.
+    #force user = john → Forces all connections to act as this user.
+    #force group = groupname → Forces files to be created under this group.
+    #veto files = /*.exe/*.mp3/ → Blocks specific file types from being saved.
+    #write list = user1, user2, @groupname--> Users or groups who have write access to a read-only share(if read only = yes, only users in write list can still writewriteable = yes, this option has no effect.
+
+- shared_dirs:
+  - { path: "/samba-share", 
+      mode: "2775", 
+      group: samba-group, 
+      sharename: "smb1", 
+      comment: "only shared to group",
+      browseable: "yes"
+      read_only: "yes"
+      write_list: 
+        - "@samba_group"
+        - "smb-user2"
+      create_mask: "0444",
+      directory_mask: "0666"
+}
+
+- srvs:
+  - smb
+  - nmb
+  - firewalld
+
+
+

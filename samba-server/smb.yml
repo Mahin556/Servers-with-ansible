@@ -1,0 +1,10 @@
+---
+- name: cofiguring a samba server and client
+  hosts: smbserver, smbclient
+  become: true
+  tasks:
+    - name: configuring a smb server and client
+      include_role: samba
+
+
+

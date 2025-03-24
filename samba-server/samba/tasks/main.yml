@@ -1,0 +1,63 @@
+---
+- name: Installing a required packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pkgs }}"
+
+- name: Groups allowed
+  group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ group }}"
+
+- name: Creating a user accounts
+  user: 
+    name: "{{ item.name }}"
+    groups: "{{ item.group | default('users')}}"
+    shell: "/sbin/nologin"
+    state: present
+  loop: "{{ user_accounts }}"
+              
+- name: setting a smb password
+  shell: "echo -e '{{ item.passwd }}\n{{ item.passwd }}\n' | smbpasswd -a {{ item.name }}"  #smbpasswd -sa {{ item.name }}
+  no_log: true
+  loop: "{{ user_accounts }}"
+ 
+- name: shared directories
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode | default('2755') }}"
+    group: "{{ item.group }}"
+  loop: "{{ shared_dirs }}"
+
+- name: modify the smb.conf file
+  template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf  
+
+- name: restart smb service:
+  service:
+    name: "{{ itme }}"
+    state: restarted
+    enabled: true
+  loop: "{{ srvs }}"
+
+- name: configuring a firewall
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop:
+    - smb
+    - nmb
+
+- name: selinux
+  selinux:
+    policy: targeted
+    state: permissive
+
+
+
