@@ -5,4 +5,7 @@
     - name: CONFIGURING A FTP SERVER
       include_role:
         name: ftp
+      when: inventory_hostname == "system1"
+
+    
   

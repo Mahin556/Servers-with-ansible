@@ -6,6 +6,15 @@
     state: present
   loop: "{{ pkgs }}"
 
+- name: STARTING A SERVICES
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - vsftpd
+    - firewalld
+
 - name: "Installing a cryptography module"
   ansible.builtin.pip:
     name: cryptography
@@ -35,6 +44,23 @@
     mode: "0644"
     state: present
 
+- name: Creating a FTP users
+  user:
+    name: "{{ item.name }}"
+    state: present
+    password: "{{ item.pass }}"
+  loop: "{{ ftp_users }}"
+
+- name: modifying a /etc/vsftpd/user_list file
+  lineinfile:
+    path: "{{ userlist.userlist_file }}"
+    line: "{{ item }}"
+    state: present
+  loop:
+    - "ftpuser1"
+    - "ftpuser2"
+  when: userlist.userlist_enable is defined and userlist.userlist_enable | lower == "yes"
+
 - name: modify a /etc/vsftpd/vsftpd.conf
   template:
     src: vsftpd.conf.j2
@@ -47,10 +73,18 @@
     permanent: true
     immediate: true
 
+- name: CONFIGURING A FIREWALL
+  firewalld:
+    port: "{{ passive_ports.pasv_min_port }}-{{ passive_ports.pasv_max_port }}/tcp"
+    state: enabled
+    permanent: true
+    immediate: true
+  when: passive_ports.pasv_min_port is defined and passive_ports.pasv_max_port is defined
+
 - name: RESTART THE SERVICE
   service:
     name: vsftpd
-    state: enabled
+    state: restarted
     enabled: true
 
 - name: CONFIGURING A SELINUX
