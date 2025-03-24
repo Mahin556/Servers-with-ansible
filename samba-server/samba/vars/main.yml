@@ -7,8 +7,8 @@ group:
   - smbgroup
 
 user_accounts:
-  - { name: "smbuser1", group: "smbgroup", home: "yes", passwd: "smb" }
-  - { name: "smbuser2", home: "no", passwd: "smb" }
+  - { name: "smbuser1", group: "smbgroup", home: "true", passwd: "smb" }
+  - { name: "smbuser2", home: "false", passwd: "smb" }
 
 
     #[sharename] → Defines the name of the shared folder.
