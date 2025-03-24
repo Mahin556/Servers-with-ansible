@@ -1,0 +1,62 @@
+---
+# tasks file for ftp
+- name: INSTALLING A REQUIRED PACKAGES
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pkgs }}"
+
+- name: "Installing a cryptography module"
+  ansible.builtin.pip:
+    name: cryptography
+
+- name: "Generating a private key"
+  community.crypto.openssl_privatekey:
+    path: "{{ ssl.key_path }}"
+    mode: "0640"
+    type: RSA
+    size: 2048
+    state: present
+                                                                      
+- name: "Generating a Certificate Signing Request(CSR) for self signed certificate"
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ ssl.key_path }}"
+    common_name: "{{ ssl.cert_common_name }}"
+    organization_name: "{{ ssl.cert_org_name }}"
+  register: csr
+
+- name: "Generating a self-signed certificate"
+  community.crypto.x509_certificate:
+    path: "{{ ssl.crt_path }}"
+    privatekey_path: "{{ ssl.key_path }}"
+    csr_content: "{{ csr.csr }}"
+    provider: selfsigned
+    selfsigned_not_after: "+365d" 
+    mode: "0644"
+    state: present
+
+- name: modify a /etc/vsftpd/vsftpd.conf
+  template:
+    src: vsftpd.conf.j2
+    dest: /etc/vsftpd/vsftpd.conf
+
+- name: CONFIGURING A FIREWALL
+  firewalld:
+    service: ftp
+    state: enabled
+    permanent: true
+    immediate: true
+
+- name: RESTART THE SERVICE
+  service:
+    name: vsftpd
+    state: enabled
+    enabled: true
+
+- name: CONFIGURING A SELINUX
+  selinux:
+    policy: targeted
+    state: permissive
+
+
+

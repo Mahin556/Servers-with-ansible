@@ -1,0 +1,8 @@
+---
+- name: Confguring a ftp server and client
+  hosts: system1, system2
+  tasks:
+    - name: CONFIGURING A FTP SERVER
+      include_role:
+        name: ftp
+  
