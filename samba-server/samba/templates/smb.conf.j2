@@ -58,7 +58,34 @@
  
 {% for shared_dir in shared_dirs %}
 [{{ shared_dir.sharename }}]
-	comment = {{ shared_dir.comment }} 
+{% if shared_dir.comment is defined and shared_dir.comment | length > 0 %}
+	comment = {{ shared_dir.comment }}
+{% endif %}
+{% if shared_dir.path is defined %}
 	path = {{ shared_dir.path }}
-	browseable = {{ shared_dir.
+{% endif %}
+{% if shared_dir.browseable is defined and shared_dir.browseable | length > 0 %}
+	browseable = {{ shared_dir.browseable }}
+{% endif %}
+{% if shared_dir.read_only is defined and shared_dir.read_only | length > 0 %}
+	read only = {{ shared_dir.read_only }}
+{% endif %}
+{% if shared_dir.create_mask is defined and shared_dir.create_mask | length > 0 %}
+	create mask = {{ shared_dir.create_mask }}
+{% endif %}
+{% if shared_dir.directory_mask is defined and shared_dir.directory_mask | length > 0 %}
+	directory mask = {{ shared_dir.directory_mask }}
+{% endif %}
+{% if shared_dir.write_list is defined and shared_dir.write_list | length > 0 %}
+	write list = {{ shared_dir.write_list | join(', ') }}
+{% endif %}
+{% if shared_dir.valid_users is defined and shared_dir.valid_users | length > 0 %}
+	valid users = {{ shared_dir.valid_users | join(', ') }}
+{% endif %}
+{% if shared_dir.guest_ok is defined and shared_dir.guest_ok | length > 0 %}
+	guest ok = {{ shared_dir.guest_ok }}
+{% endif %}
+{% if shared_dir.hosts_allow is defined and shared_dir.hosts_allow | length > 0 %}
+	hosts allow = {{ shared_dir.hosts_allow | join(', ') }}
+{% endif %}
 {% endfor %}
