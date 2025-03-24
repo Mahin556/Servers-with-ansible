@@ -17,6 +17,7 @@
     groups: "{{ item.group | default('users')}}"
     shell: "/sbin/nologin"
     state: present
+    create_home: "{{ item.home }}"
   loop: "{{ user_accounts }}"
               
 - name: setting a smb password
@@ -29,6 +30,7 @@
     path: "{{ item.path }}"
     state: directory
     mode: "{{ item.mode | default('2755') }}"
+    owner: root
     group: "{{ item.group }}"
   loop: "{{ shared_dirs }}"
 
@@ -37,9 +39,9 @@
     src: smb.conf.j2
     dest: /etc/samba/smb.conf  
 
-- name: restart smb service:
+- name: restart smb service
   service:
-    name: "{{ itme }}"
+    name: "{{ item }}"
     state: restarted
     enabled: true
   loop: "{{ srvs }}"
@@ -51,8 +53,8 @@
     permanent: true
     immediate: true
   loop:
-    - smb
-    - nmb
+    - samba
+
 
 - name: selinux
   selinux:
