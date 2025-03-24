@@ -4,11 +4,11 @@ pkgs:
   - samba-common
   - samba-client
 group:
-  - samba-group
+  - smbgroup
 
-- user_accounts:
-  - { name: "smb-user1", group: "samba-group", passwd: "smb" }
-  - { name: "smb-user2", passwd: "smb" }
+user_accounts:
+  - { name: "smbuser1", group: "smbgroup", home: "yes", passwd: "smb" }
+  - { name: "smbuser2", home: "no", passwd: "smb" }
 
 
     #[sharename] → Defines the name of the shared folder.
@@ -26,22 +26,23 @@ group:
     #veto files = /*.exe/*.mp3/ → Blocks specific file types from being saved.
     #write list = user1, user2, @groupname--> Users or groups who have write access to a read-only share(if read only = yes, only users in write list can still writewriteable = yes, this option has no effect.
 
-- shared_dirs:
+shared_dirs:
   - { path: "/samba-share", 
       mode: "2775", 
-      group: samba-group, 
+      group: "smbgroup", 
       sharename: "smb1", 
-      comment: "only shared to group",
-      browseable: "yes"
-      read_only: "yes"
-      write_list: 
-        - "@samba_group"
-        - "smb-user2"
+      comment: "demo",
+      browseable: "yes",
+      read_only: "yes",
+      write_list: [ "@smbgroup", "smbuser2" ], #Always List
+      valid_users: [], #Always List
+      guest_ok: "",
+      hosts_allow: [], #Always List
       create_mask: "0444",
       directory_mask: "0666"
 }
 
-- srvs:
+srvs:
   - smb
   - nmb
   - firewalld
