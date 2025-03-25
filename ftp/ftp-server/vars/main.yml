@@ -3,12 +3,6 @@ pkgs:
   - vsftpd
   - python3-pip
 
-ftp_users:
-  - name: ftpuser1
-    pass: a
-  - name: ftpuser2
-    pass: a
-
 ssl:
   ssl_enable: "YES"
   key_path: "/etc/pki/tls/private/ftp.key"
