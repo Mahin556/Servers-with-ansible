@@ -18,6 +18,7 @@
 - name: "Installing a cryptography module"
   ansible.builtin.pip:
     name: cryptography
+  when: ssl.ssl_enable | lower == "yes"
 
 - name: "Generating a private key"
   community.crypto.openssl_privatekey:
@@ -26,6 +27,7 @@
     type: RSA
     size: 2048
     state: present
+  when: ssl.ssl_enable | lower == "yes"
                                                                       
 - name: "Generating a Certificate Signing Request(CSR) for self signed certificate"
   community.crypto.openssl_csr_pipe:
@@ -33,6 +35,7 @@
     common_name: "{{ ssl.cert_common_name }}"
     organization_name: "{{ ssl.cert_org_name }}"
   register: csr
+  when: ssl.ssl_enable | lower == "yes"
 
 - name: "Generating a self-signed certificate"
   community.crypto.x509_certificate:
@@ -43,13 +46,18 @@
     selfsigned_not_after: "+365d" 
     mode: "0644"
     state: present
+  when: ssl.ssl_enable | lower == "yes"
+
+- name: INCLUDE A VAR_VAULT FILE
+  include_vars: " user_info.yml"
 
 - name: Creating a FTP users
   user:
     name: "{{ item.name }}"
     state: present
-    password: "{{ item.pass }}"
+    password: "{{ item.pass | string | password_hash('sha512') }}"
   loop: "{{ ftp_users }}"
+  no_log: yes
 
 - name: modifying a /etc/vsftpd/user_list file
   lineinfile:
