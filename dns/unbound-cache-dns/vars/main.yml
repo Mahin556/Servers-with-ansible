@@ -1,0 +1,30 @@
+pkgs:
+  - unbound
+  - firewalld
+
+srvs:
+  - unbound
+  - firewalld
+
+interfaces:
+  - 0.0.0.0
+
+listening_port: 53
+
+unbound_conf_dir: "/etc/unbound"
+
+access_control_list:
+  - network: 192.168.29.0/24
+    state: allow
+  - network: 192.168.1.0/24
+    state: allow
+
+allowed_domains:
+  - "webfix.com"
+  - "tctech.com"
+
+dns_addresses:
+  - 192.168.29.228
+  - 192.168.29.167
+
+

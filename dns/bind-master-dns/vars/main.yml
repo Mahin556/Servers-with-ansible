@@ -1,24 +1,39 @@
-- ipv4_interfaces: #list
-    - localhost
-    - 192.168.29.228
+pkgs:
+  - bind
+  - bind-utils
+  - firewalld
 
-- ipv6_interfaces: #list
-    - ::1
+srvs:
+  - named
+  - firewalld
 
-- allow_query: #list
-    - localhost
-    - 192.168.29.0/24
+conf_dir: /etc
 
-- allow_transfer: #list
-    - localhost
-    - 192.168.29.166
+zone_directory: "/var/named"
 
-- allow_update: #list
-    - 192.168.29.166
+listening_port: 53
 
-- recursive: "yes" #yes or no only
+ipv4_interfaces: #list
+  - localhost
+  - 192.168.29.228
 
-- zones: #list
+ipv6_interfaces: #list
+  - ::1
+
+allow_query: #list
+  - localhost
+  - 192.168.29.0/24
+
+allow_transfer: #list
+  - localhost
+  - 192.168.29.167
+
+allow_update: #list
+  - 192.168.29.167
+
+recursive: "yes" #yes or no only
+
+zones: #list
   - name: webfix.com
     ttl: 1H
     soa: "ns1.webfix.com"
@@ -69,7 +84,7 @@
         type: "A"
         value: "192.168.29.206"
 
-- notify_on: "yes"
+notify_on: "yes"
 
 
 

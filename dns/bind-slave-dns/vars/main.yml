@@ -1,0 +1,43 @@
+pkgs:
+  - bind
+  - bind-utils
+  - firewalld
+
+srvs:
+  - named
+  - firewalld
+
+listening_port: 53
+
+ipv4_interfaces: #list
+  - localhost
+  - 192.168.29.167
+
+ipv6_interfaces: #list
+  - ::1
+
+allow_query: #list
+  - localhost
+  - 192.168.29.0/24
+
+allow_transfer: #list
+  - none
+
+allow_update: #list
+  - none
+
+recursive: "yes" #yes or no only
+
+zones: #list
+  - name: webfix.com
+    type: slave
+    master: 192.168.29.228
+  - name: tctech.com
+    type: slave
+    master: 192.168.29.228
+
+notify_on: "no"
+conf_dir: /etc
+zone_directory: "/var/named"
+slv_zone_dir: "slaves/"
+

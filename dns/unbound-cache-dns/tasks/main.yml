@@ -1,0 +1,32 @@
+---
+- name: Installing required packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pkgs }}"
+
+- name: Configure the unbound server
+  template:
+    src: cache.conf.j2
+    dest: "{{ unbound_conf_dir }}"
+  
+- name: Configuring a selinux
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: starting a services
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+  loop: "{{ srvs }}"
+
+- name: configuring a firewall
+  firewalld:
+    service: dns
+    state: enabled
+    permanent: true
+    immediate: true
+
+
