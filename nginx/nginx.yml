@@ -1,0 +1,8 @@
+---
+- name: Configuring a nginx webserver and hosting a webpage on it
+  hosts: nginx
+  become: true
+  tasks:
+    - name: Configuring a nginx webserver
+      include_role: 
+        name: nginx-server

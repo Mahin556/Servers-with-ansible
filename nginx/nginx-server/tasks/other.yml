@@ -1,0 +1,26 @@
+---
+- name: Starting and enabling the service
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+  loop: "{{ server.srv }}"
+
+- name: Configuring a firewall rules
+  firewalld:
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop:
+    - http
+    - https
+
+- name: Making SELinux State Permissive
+  selinux:
+    policy: targeted
+    state: permissive
+
+
+
+    
