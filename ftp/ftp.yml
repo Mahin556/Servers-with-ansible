@@ -1,0 +1,17 @@
+---
+- name: CONFIGURING A FTP SERVER
+  hosts: system1
+  tasks:
+    - name: TASK1
+      include_role:
+        name: ftp-server
+      
+- name: CONFIGURING A LINUX FTP CLIENT
+  hosts: system2
+  remote_user: root
+  tasks:
+    - name: TASK2
+      include_role:
+        name: ftp-client-linux
+      
+  
