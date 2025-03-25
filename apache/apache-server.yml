@@ -5,4 +5,4 @@
   tasks:
     - name: CONFIGUTIRING A WEBSERVER
       include_role:
-        - apache-server
+        name: apache-server

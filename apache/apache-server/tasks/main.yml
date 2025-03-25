@@ -4,7 +4,7 @@
     name: "{{ item }}"
     state: present
   loop: "{{ server.pkgs }}"
-  
+     
 - name: "Installing a cryptography module"
   ansible.builtin.pip:
     name: cryptography
@@ -36,7 +36,7 @@
 
 - name: "Preparing the configuration file for {{ cert_common_name }}"
   template:
-    src: /root/mahin/Servers-with-ansible/apache-server/{{ cert_org_name }}.conf.j2
+    src: "{{ cert_org_name }}.conf.j2"
     dest: /etc/httpd/conf.d/{{ cert_org_name }}.conf
 
 - name: "Ensuring the document root exists"
@@ -47,31 +47,8 @@
 
 - name: "Preparing the index page"
   template:
-    src: ./index.html.j2
+    src: index.html.j2
     dest: "{{ paths.doc_root }}/index.html"
-    
-- name: "Starting and enabling the {{ server.srv }} service"
-  service:
-    name: "{{ item }}"
-    state: restarted
-    enabled: true
-  loop: "{{ server.srv }}"
 
-- name: "Configuring a firewall rules"
-  firewalld:
-    service: "{{ item }}"
-    state: enabled
-    permanent: true
-    immediate: true
-  loop:
-    - http
-    - https
-
-- name: Making SELinux State Permissive
-  selinux:
-    policy: targeted
-    state: permissive
-
-
-
-    
+- name: CONFIGURE SELINUX, SERVICES and FIREWALL  
+  include_tasks: other.yml
