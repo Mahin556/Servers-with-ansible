@@ -5,12 +5,12 @@ pkgs:
 
 ftp_users:
   - name: ftpuser1
-    pass: "ftpuser1"
+    pass: a
   - name: ftpuser2
-    pass: "ftpuser2"
+    pass: a
 
 ssl:
-  ssl_enable: "YES"
+  ssl_enable: "NO"
   key_path: "/etc/pki/tls/private/ftp.key"
   cert_common_name: "doome"
   cert_org_name: "doome"
@@ -31,9 +31,9 @@ userlist:
 
 chroot:
   chroot_local_user: "YES"
-  chroot_list_enable: "NO"
+  chroot_list_enable: "YES"
   allow_writeable_chroot: "YES"
-  chroot_list_file: ""
+  chroot_list_file: "/etc/vsftpd/chroot_list"
 
 anonymous_enable: "NO"
 local_enable: "YES"
