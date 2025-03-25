@@ -1,0 +1,12 @@
+---
+- name: INSTALLING A REQUIRED PACKAGES IN LINUX CLIENT
+  yum: 
+    name: lftp
+    state: present
+
+- name: CONFIGURING A CLIENT ACCESS A FTP SERVER OVER SSL/TLS CONNECTION
+  copy:
+    src: ssl-file
+    dest: "~/.lftprc"
+  when: SSL_ENABLE | lower == "yes"
+
