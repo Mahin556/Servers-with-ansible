@@ -1,0 +1,104 @@
+---
+# tasks file for ftp
+- name: INSTALLING A REQUIRED PACKAGES
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pkgs }}"
+
+- name: STARTING A SERVICES
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - vsftpd
+    - firewalld
+
+- name: "Installing a cryptography module"
+  ansible.builtin.pip:
+    name: cryptography
+  when: ssl.ssl_enable | lower == "yes"
+
+- name: "Generating a private key"
+  community.crypto.openssl_privatekey:
+    path: "{{ ssl.key_path }}"
+    mode: "0640"
+    type: RSA
+    size: 2048
+    state: present
+  when: ssl.ssl_enable | lower == "yes"
+                                                                      
+- name: "Generating a Certificate Signing Request(CSR) for self signed certificate"
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ ssl.key_path }}"
+    common_name: "{{ ssl.cert_common_name }}"
+    organization_name: "{{ ssl.cert_org_name }}"
+  register: csr
+  when: ssl.ssl_enable | lower == "yes"
+
+- name: "Generating a self-signed certificate"
+  community.crypto.x509_certificate:
+    path: "{{ ssl.crt_path }}"
+    privatekey_path: "{{ ssl.key_path }}"
+    csr_content: "{{ csr.csr }}"
+    provider: selfsigned
+    selfsigned_not_after: "+365d" 
+    mode: "0644"
+    state: present
+  when: ssl.ssl_enable | lower == "yes"
+
+- name: INCLUDE A VAR_VAULT FILE
+  include_vars: " user_info.yml"
+
+- name: Creating a FTP users
+  user:
+    name: "{{ item.name }}"
+    state: present
+    password: "{{ item.pass | string | password_hash('sha512') }}"
+  loop: "{{ ftp_users }}"
+  no_log: yes
+
+- name: modifying a /etc/vsftpd/user_list file
+  lineinfile:
+    path: "{{ userlist.userlist_file }}"
+    line: "{{ item }}"
+    state: present
+  loop:
+    - "ftpuser1"
+    - "ftpuser2"
+  when: userlist.userlist_enable is defined and userlist.userlist_enable | lower == "yes"
+
+- name: modify a /etc/vsftpd/vsftpd.conf
+  template:
+    src: vsftpd.conf.j2
+    dest: /etc/vsftpd/vsftpd.conf
+
+- name: CONFIGURING A FIREWALL
+  firewalld:
+    service: ftp
+    state: enabled
+    permanent: true
+    immediate: true
+
+- name: CONFIGURING A FIREWALL
+  firewalld:
+    port: "{{ passive_ports.pasv_min_port }}-{{ passive_ports.pasv_max_port }}/tcp"
+    state: enabled
+    permanent: true
+    immediate: true
+  when: passive_ports.pasv_min_port is defined and passive_ports.pasv_max_port is defined
+
+- name: RESTART THE SERVICE
+  service:
+    name: vsftpd
+    state: restarted
+    enabled: true
+
+- name: CONFIGURING A SELINUX
+  selinux:
+    policy: targeted
+    state: permissive
+
+
+
