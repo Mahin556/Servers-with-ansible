@@ -1,37 +1,38 @@
 ---
-- name: task1
+- name: INSTALLING A REQUIRED PACKAGES
   yum:
     name: 
       - nfs-utils
       - rpcbind
     state: present
   
-- name: task2
+- name: IS NFS SHARE EXIST?
   file:
     path: "{{ nfs_share }}"
     mode: "0777"
     state: directory
    
-- name: task3
+- name: MAKE SURE NFS SHARE HAVE SOME FILES ETC...
   copy:
     src: "{{ item }}"
     dest: "{{ nfs_share }}"
     remote_src: no
   with_fileglob:
-    - "/etc/*.conf;"
-- name: task4
+    - /etc/*.conf
+
+- name: EXPORTING NFS SHARE.....
   template:
     src: exports.j2
     dest: /etc/exports
 
-- name: start and enable services
+- name: SERVICE START & ENABLED
   service:
     name: "{{ item }}"
     state: restarted
     enabled: true
   loop: "{{ srvs }}"
 
-- name: task5
+- name: PREPARE FIREWALL
   firewalld:
     service: "{{ item }}"
     state: enabled
@@ -42,19 +43,9 @@
     - rpc-bind
     - mountd    
 
-- name: task6
+- name: SELINUX BE PERMISSIVE
   selinux:
     policy: targeted
     state: permissive
 
 
-- name: Configuring a NFS-Client
-  hosts: system2
-  tasks:
-    - name: Play
-      mount:
-        src: system1:/nfs_share
-        path: "/mount/nfs"
-        state: mounted
-        opts: "defaults,_netdev"
-        fstype: nfs
