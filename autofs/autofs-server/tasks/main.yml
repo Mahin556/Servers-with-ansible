@@ -1,0 +1,57 @@
+---
+- name: INSTALLING A REQUIRED PACKAGES
+  yum:
+    name: autofs
+    state: present
+  
+- name: CREATING A MOUNT DIRECTORY
+  file:
+    path: "{{ item.mount_dir }}"
+    mode: "0755"
+    state: directory
+  loop: "{{ mounts }}"
+
+- name: PREPARE MASTER FILE
+  template:
+    src: ./auto.master.j2
+    dest: /etc/auto.master
+    mode: "0644"
+
+- name: PREPARE MISC FILES
+  template:
+    src: ./auto.misc.j2
+    dest: "/etc/{{ item.mount_point }}.misc"
+    mode: "0644"
+  loop: "{{ mounts }}"
+  
+- name: CREATING A MOUNT POINT IN MOUNT DIRECTORY
+  file:
+    path: "{{ item.mount_dir }}/{{ item.mount_point }}"
+    state: directory
+    mode: "0644"
+  loop: "{{ mounts }}"
+
+- name: CONFIGURING A SELINUX
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: RESTARTING THE SERVICE OF AUTOFS
+  service: 
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+  loop: "{{ srvs }}" 
+
+- name: CONFIGURING A FIREWALL
+  firewalld: 
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop: 
+    - nfs
+    - rpc-bind
+    - mountd
+
+
