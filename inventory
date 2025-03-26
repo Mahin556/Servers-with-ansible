@@ -1,5 +1,6 @@
 [nfs_server]
 system1
+system2
 
 [master_dns]
 system1
