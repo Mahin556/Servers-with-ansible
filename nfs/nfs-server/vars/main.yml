@@ -1,75 +1,16 @@
 ---
-- name: Configuring a NFS-Server
-  hosts: system1
-  vars:
-    srvs:
-      - nfs-server
-      - firewalld
-      - rpcbind
-    nfs_share: "/nfs_share"
-    hosts: "*"
-    perms: "rw"
-    sync: "sync"
-    squash: "no_root_squash"
+srvs:
+  - nfs-server
+  - firewalld
+  - rpcbind
 
-  tasks:
-  - name: task1
-    yum:
-      name: 
-        - nfs-utils
-        - rpcbind
-      state: present
-  
-  - name: task2
-    file:
-      path: "{{ nfs_share }}"
-      mode: "0777"
-      state: directory
-   
-  - name: task3
-    copy:
-      src: "{{ item }}"
-      dest: "{{ nfs_share }}"
-      remote_src: no
-    with_fileglob:
-      - "/etc/*.conf;"
-  - name: task4
-    template:
-      src: exports.j2
-      dest: /etc/exports
+nfs_share: "/nfs_share"
 
-  - name: start and enable services
-    service:
-      name: "{{ item }}"
-      state: restarted
-      enabled: true
-    loop: "{{ srvs }}"
+hosts: "*"
 
-  - name: task5
-    firewalld:
-      service: "{{ item }}"
-      state: enabled
-      permanent: true
-      immediate: true
-    loop:
-      - nfs
-      - rpc-bind
-      - mountd    
+perms: "rw"
 
-  - name: task6
-    selinux:
-      policy: targeted
-      state: permissive
+sync: "sync"
 
-- name: Configuring a NFS-Client
-  hosts: system2
-  tasks:
-  - name: Play
-    mount: 
-      src: system1:/nfs_share
-      path: "/mount/nfs"
-      state: mounted
-      opts: "defaults,_netdev"
-      fstype: nfs
- 
+squash: "no_root_squash"
 
