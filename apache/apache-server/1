@@ -11,18 +11,15 @@
 {% if server_alias is defined and server_alias | length > 0 %}
     ServerAlias {{ server_alias }}
 {% endif %}
-{% if server_admin is defined and server_admin | length > 0 %}
-    ServerAdmin {{ server_admin }}
-{% endif %}
     DocumentRoot {{ doc_root }}    
     SSLEngine on
     SSLCertificateFile {{ ssl_crt }}
     SSLCertificateKeyFile {{ ssl_key }}
 {% if error_log is defined and error_log | length > 0 %}
-    ErrorLog "{{ error_log }}"
+    ErrorLog {{ error_log }}
 {% endif %}
-{% if custom_log is defined and custom_log | length > 0 %}
-    CustomLog "{{ custom_log }}" {{ custom_log_format }}
+{% if access_log is defined and access_log | length > 0 %}
+    AccessLog {{ access_log }}
 {% endif %}
     <Directory {{ doc_root }}>
     	Options  {% for option in options %}{{ option }} {% endfor %}
@@ -42,10 +39,10 @@
 {% endif %}
     DocumentRoot {{ doc_root }}
 {% if error_log is defined and error_log | length > 0 %}
-    ErrorLog "{{ error_log }}"
+    ErrorLog {{ error_log }}
 {% endif %}
-{% if custom_log is defined and custom_log | length > 0 %}
-    CustomLog "{{ custom_log }}" {{ custom_log_format }}
+{% if access_log is defined and access_log | length > 0 %}
+    AccessLog {{ access_log }}
 {% endif %}
     <Directory {{ doc_root }}>
         Options {% for option in options %}{{ option }} {% endfor %}
