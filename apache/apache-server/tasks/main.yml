@@ -4,35 +4,37 @@
     name: "{{ item }}"
     state: present
   loop: "{{ pkgs }}"
-     
-- name: "Installing a cryptography module"
-  ansible.builtin.pip:
-    name: cryptography
 
-- name: "Generating a private key for the {{ server_name }}"
-  community.crypto.openssl_privatekey:
-    path: "{{ ssl_key }}"
-    mode: "0640"
-    type: RSA
-    size: 2048
-    state: present
+- block:     
+    - name: "Installing a cryptography module"
+      ansible.builtin.pip:
+        name: cryptography
+
+    - name: "Generating a private key for the {{ server_name }}"
+      community.crypto.openssl_privatekey:
+        path: "{{ ssl_key }}"
+        mode: "0640"
+        type: RSA
+        size: 2048
+        state: present
   
-- name: "Generating a Certificate Signing Request(CSR) for self signed certificate"
-  community.crypto.openssl_csr_pipe:
-    privatekey_path: "{{ ssl_key }}"
-    common_name: "{{ cert_common_name }}"
-    organization_name: "{{ cert_org_name }}"
-  register: csr
+    - name: "Generating a Certificate Signing Request(CSR) for self signed certificate"
+      community.crypto.openssl_csr_pipe:
+        privatekey_path: "{{ ssl_key }}"
+        common_name: "{{ cert_common_name }}"
+        organization_name: "{{ cert_org_name }}"
+      register: csr
 
-- name: "Generating a self-signed certificate for {{ cert_common_name }}"
-  community.crypto.x509_certificate:
-    path: "{{ ssl_crt }}"
-    privatekey_path: "{{ ssl_key }}"
-    csr_content: "{{ csr.csr }}"
-    provider: selfsigned
-    selfsigned_not_after: "+365d" 
-    mode: "0644"
-    state: present
+    - name: "Generating a self-signed certificate for {{ cert_common_name }}"
+      community.crypto.x509_certificate:
+        path: "{{ ssl_crt }}"
+        privatekey_path: "{{ ssl_key }}"
+        csr_content: "{{ csr.csr }}"
+        provider: selfsigned
+        selfsigned_not_after: "+365d" 
+        mode: "0644"
+        state: present
+  when: ssl_engine is defined and ssl_engine | lower == "yes"
 
 - name: "Preparing the configuration file for {{ cert_common_name }}"
   template:
