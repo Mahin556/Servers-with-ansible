@@ -1,6 +1,7 @@
 ---
 server_name: webfix.com
 server_alias: www.webfix.com
+
 pkgs:
   - httpd
   - mod_ssl
@@ -9,11 +10,16 @@ pkgs:
 srvs:
   - httpd
   - firewalld
-doc_root: /var/www/html
 
-ssh_engine: "on"
+doc_root: /var/www/html
+directory_index: "index.html"
+allow_override: "None"
+options: [ indexes, followsymlinks]
+
+ssl_engine: "no"  #yes/no only
 ssl_key: /etc/pki/tls/private/{{ cert_org_name }}.key
 ssl_crt: /etc/pki/tls/certs/{{ cert_org_name }}.crt
 cert_common_name: webfix.com
 cert_org_name: webfix
+
 
