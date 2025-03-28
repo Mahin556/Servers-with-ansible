@@ -1,20 +1,33 @@
 ---
 server_name: webfix.com
-server_alias: [www.webfix.com, demo.com]
+
+server_alias: 
+  - www.webfix.com 
+  - demo.com
 
 pkgs:
   - httpd
   - mod_ssl
   - firewalld
   - python3-pip
+
 srvs:
   - httpd
   - firewalld
 
 doc_root: /var/www/html
-directory_index: "index.html"
-allow_override: "None"
-options: [indexes, followsymlinks]
+
+directory_indexes: 
+  - index.html
+  - index.php
+
+allow_override: "all"   #all/none
+
+# username and password for authentication are located in user_auth.yml(vault)
+options: 
+  - indexes
+  - followsymlinks
+
 server_admin: mahinraza123@gmail.com
 
 ssl_engine: "yes"  #yes/no only

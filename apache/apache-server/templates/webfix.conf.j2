@@ -27,11 +27,11 @@
     CustomLog "{{ custom_log }}" {{ custom_log_format }}
 {% endif %}
     <Directory {{ doc_root }}>
-    	Options  {% for option in options %}{{ option }} {% endfor %}
-        
-	DirectoryIndex {{ directory_index }}
-        Require all granted
     	AllowOverride {{ allow_override }}
+	Options {% for option in options %}{{ option }} {% endfor %}
+     	
+	DirectoryIndex {% for directory_index in directory_indexes %}{{ directory_index }} {% endfor %} 
+	Require all granted
     </Directory>
 </VirtualHost>
 {% endif %}
@@ -50,11 +50,11 @@
     CustomLog "{{ custom_log }}" {{ custom_log_format }}
 {% endif %}
     <Directory {{ doc_root }}>
-        Options {% for option in options %}{{ option }} {% endfor %}
-        
-	DirectoryIndex {{ directory_index }}
-        Require all granted
         AllowOverride {{ allow_override }}
+	Options {% for option in options %}{{ option }} {% endfor %}
+	
+	DirectoryIndex {% for directory_index in directory_indexes %}{{ directory_index }} {% endfor %}
+	Require all granted
     </Directory>
 </VirtualHost>
 {% endif %}
