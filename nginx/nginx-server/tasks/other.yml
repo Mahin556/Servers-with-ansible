@@ -4,7 +4,7 @@
     name: "{{ item }}"
     state: restarted
     enabled: true
-  loop: "{{ server.srv }}"
+  loop: "{{ srvs }}"
 
 - name: Configuring a firewall rules
   firewalld:
