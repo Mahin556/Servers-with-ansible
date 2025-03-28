@@ -1,19 +1,22 @@
 ---
 server_name: tctech.com
-server_alias: www.tctech.com
-server:
-   pkgs:
-     - nginx
-     - mod_ssl
-     - firewalld
-     - python3-pip
-   srv:
-     - nginx
-     - firewalld
-paths:
-  doc_root: /usr/share/nginx/html
-  ssl_key: /etc/pki/tls/private/{{ cert_org_name }}.key
-  ssl_crt: /etc/pki/tls/certs/{{ cert_org_name }}.crt
+server_alias: [ www.tctech.com ]
+
+pkgs:
+  - nginx
+  - mod_ssl
+  - firewalld
+  - python3-pip
+srvs:
+  - nginx
+  - firewalld
+
+doc_root: "/usr/share/nginx/html"
+index_file: "index.html"
+ssl: "yes"
+ssl_key: /etc/pki/tls/private/{{ cert_org_name }}.key
+ssl_crt: /etc/pki/tls/certs/{{ cert_org_name }}.crt
 cert_common_name: tctech.com
 cert_org_name: tctech
-
+access_log: "/var/log/nginx/access.log"
+error_log: "/var/log/nginx/error.log"
