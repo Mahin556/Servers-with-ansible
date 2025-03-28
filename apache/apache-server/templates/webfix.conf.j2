@@ -2,15 +2,17 @@
 <VirtualHost *:80>
     ServerName  {{ server_name }}
 {% if server_alias is defined and server_alias | length > 0 %}
-    ServerAlias {{ server_alias }}
+    ServerAlias {% for alias in server_alias %}{{ alias }} {% endfor %}
 {% endif %}
+
     Redirect permanent / https://{{ server_name }}
 </VirtualHost>
 <VirtualHost *:443>
     ServerName {{ server_name }}
 {% if server_alias is defined and server_alias | length > 0 %}
-    ServerAlias {{ server_alias }}
+    ServerAlias {% for alias in server_alias %}{{ alias }} {% endfor %}
 {% endif %}
+
 {% if server_admin is defined and server_admin | length > 0 %}
     ServerAdmin {{ server_admin }}
 {% endif %}
@@ -38,7 +40,7 @@
 <VirtualHost *:80>
     ServerName  {{ server_name }}
 {% if server_alias is defined and server_alias | length > 0 %}
-    ServerAlias {{ server_alias }}
+    ServerAlias {% for alias in server_alias %}{{ alias }} {% endfor %}
 {% endif %}
     DocumentRoot {{ doc_root }}
 {% if error_log is defined and error_log | length > 0 %}

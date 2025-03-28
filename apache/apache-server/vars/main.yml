@@ -1,6 +1,6 @@
 ---
 server_name: webfix.com
-server_alias: www.webfix.com
+server_alias: [www.webfix.com, demo.com]
 
 pkgs:
   - httpd
