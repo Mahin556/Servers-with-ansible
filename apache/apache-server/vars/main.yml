@@ -14,7 +14,7 @@ srvs:
 doc_root: /var/www/html
 directory_index: "index.html"
 allow_override: "None"
-options: [ indexes, followsymlinks]
+options: [indexes, followsymlinks]
 server_admin: mahinraza123@gmail.com
 
 ssl_engine: "yes"  #yes/no only
