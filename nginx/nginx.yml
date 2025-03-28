@@ -2,6 +2,8 @@
 - name: Configuring a nginx webserver and hosting a webpage on it
   hosts: nginx
   become: true
+  vars_files:
+    - ./nginx-server/vars/user_auth.yml
   tasks:
     - name: Configuring a nginx webserver
       include_role: 

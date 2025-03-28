@@ -16,6 +16,12 @@ server {
 	location / {
 		root {{ doc_root }};
 		index {{ index_file }};
+{% if auth_enabled is defined and auth_enabled | lower == "yes" %}
+		#auth_basic "{{ auth_msg }}";
+		#auth_basic {{ auth_msg | to_json }};
+		auth_basic {{ auth_msg | quote }};
+		auth_basic_user_file {{ auth_file }};
+{% endif %}
 	}
 	access_log {{ access_log }};
 	error_log {{ error_log }};
@@ -37,7 +43,11 @@ server {
 %};
 	location / {
                 root {{ doc_root }};
-		index {{ index_file }};        
+		index {{ index_file }};
+{% if auth_enabled is defined and auth_enabled | lower == "yes" %}
+                auth_basic {{ auth_msg | quote }};
+                auth_basic_user_file {{ auth_file }};
+{% endif %}
 	}
 	access_log {{ access_log }};
         error_log {{ error_log }};

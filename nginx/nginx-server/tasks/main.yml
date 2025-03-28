@@ -8,7 +8,10 @@
 - block:
     - name: "Installing a cryptography module"
       ansible.builtin.pip:
-        name: cryptography
+        name: "{{ item }}" 
+      loop:
+        - cryptography
+        - passlib
 
     - name: "Generating a private key for the {{ server_name }}"
       community.crypto.openssl_privatekey:
@@ -46,6 +49,18 @@
     path: "{{ doc_root }}"
     state: directory
     mode: "0755"
+
+- name: Add a user to a password file and ensure permissions are set
+  community.general.htpasswd:
+    path: /etc/nginx/.htpasswd
+    name: "{{ item.name }}"
+    password: "{{  item.passwd }}"
+    owner: root
+    group: nginx
+    mode: 0640
+    crypt_scheme: md5_crypt
+  loop: "{{ users }}"
+  when: auth_enabled is defined and auth_enabled | lower == "yes"
 
 - name: "Preparing the index page"
   template:
