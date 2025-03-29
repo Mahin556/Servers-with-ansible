@@ -4,19 +4,29 @@
     - master_dns
     - slave_dns
     - cache_dns
+  vars:
+    - master_config: true
+    - slave_config: false
+    - cache_config: false
   tasks:
     - name: CONFIGURING A DNS MASTER SERVER
       include_role:
         name: bind-master-dns
-      when: inventory_hostname in groups['master_dns']
+      when: 
+        - inventory_hostname in groups['master_dns']
+        - master_config == true
 
     - name: CONFIGURING A DNS SLAVE SERVER
       include_role:
         name: bind-slave-dns
-      when: inventory_hostname in groups['slave_dns']
+      when: 
+        - inventory_hostname in groups['slave_dns'] 
+        - slave_config == true
 
     - name: CONFIGURING A DNS CACHE SERVER
       include_role:
         name: unbound-cache-dns
-      when: inventory_hostname in groups['cache_dns']
+      when: 
+        - inventory_hostname in groups['cache_dns'] 
+        - cache_config == true
 

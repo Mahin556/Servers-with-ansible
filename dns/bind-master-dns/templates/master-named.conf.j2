@@ -56,14 +56,27 @@ zone "." IN {
 	file "named.ca";
 };
 
-{% for zone in zones %}
+{% if frw_zones is defined %}
+{% for zone in frw_zones %}
 zone "{{ zone.name }}" IN {
 	type {{ zone.type }};
-	file "forward-{{ zone.name }}";
+	file "{{ zone.name }}-forward";
 	notify {{ notify_on }};
 }; 
 
 {% endfor %}
+{% endif %}
+
+{% if rvs_zones is defined %}
+{% for zone in rvs_zones %}
+zone "{{ zone.name }}" IN {
+        type {{ zone.type }};
+        file "{{ zone.name }}-reverse";
+        notify {{ notify_on }};
+};
+
+{% endfor %}
+{% endif %}
 
 include "/etc/named.rfc1912.zones";
 include "/etc/named.root.key";

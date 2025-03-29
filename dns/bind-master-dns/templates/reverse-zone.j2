@@ -22,7 +22,7 @@ $TTL {{ item.soa.ttl | default('86400') }}
 
 {% if item.records is defined %}
 {% for record in item.records %}
-{{ record.name }}	IN	{{ record.type|default('A') }}	{{ record.value }} {% if record.type == "CNAME" %}.{% endif %}
+{{ record.value }}	IN	{{ record.type|default('PTR') }}	{{ record.fqdn }}. 
 
 {% endfor %}
 {% endif %}

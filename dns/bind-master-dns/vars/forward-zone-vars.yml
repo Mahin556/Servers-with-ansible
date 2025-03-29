@@ -1,0 +1,55 @@
+frw_zones: #list
+  - name: webfix.com
+    soa: 
+      ns: "ns1.webfix.com"
+      mail: "mahin123@webfix.com"
+      ttl: "1H"
+      serial: 100
+      refresh: 1H
+      retry: 300
+      expire: 1D
+      minimum: 3H
+    type: master
+    ns:
+      - name: ns1.webfix.com
+    mx:
+      - name: mx1.webfix.com
+        priority: 10
+    records:
+      - name: "ns1"
+        type: "A"
+        value: "192.168.29.18"
+      - name: "mx1"
+        type: "A"
+        value: "192.168.29.18"
+      - name: "www"
+        type: "A"
+        value: "192.168.29.18"
+
+  - name: tctech.com
+    soa: 
+      ns: "ns1.tctech.com"
+      mail: "mahin123@tctech.com"
+      ttl: "1H"
+      serial: 100
+      refresh: 1H
+      retry: 300
+      expire: 1D
+      minimum: 3H
+    type: master
+    ns:
+      - name: ns1.tctech.com
+    mx:
+      - name: mx1.tctech.com
+        priority: 10
+    records:
+      - name: "ns1"
+        type: "A"
+        value: "192.168.29.206"
+      - name: "mx1"
+        type: "A"
+        value: "192.168.29.206"
+      - name: "www"
+        type: "A"
+        value: "192.168.29.206"
+  

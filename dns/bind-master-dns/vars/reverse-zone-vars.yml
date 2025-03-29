@@ -1,0 +1,54 @@
+rvs_zones: #list
+  - name: "2.11.10.in-addr.arpa"
+    soa: 
+      ns: "ns1.webfix.com"
+      mail: "mahin123@webfix.com"
+      ttl: "1H"
+      serial: 100
+      refresh: 1H
+      retry: 300
+      expire: 1D
+      minimum: 3H
+    type: master
+    ns:
+      - name: ns1.webfix.com
+    mx:
+      - name: mx1.webfix.com
+        priority: 10
+    records:
+      - value: "10"
+        type: "PTR"
+        fqdn: "www.webfix.com"
+      - value: "11"
+        type: "PTR"
+        fqdn: "mail.webfix.com"
+      - value: "12"
+        type: "PTR"
+        fqdn: "ftp.webfix.com"
+
+  - name: "3.11.10.in-addr.arpa"
+    soa: 
+      ns: "ns1.tctech.com"
+      mail: "mahin123@tctech.com"
+      ttl: "1H"
+      serial: 100
+      refresh: 1H
+      retry: 300
+      expire: 1D
+      minimum: 3H
+    type: master
+    ns:
+      - name: ns1.tctech.com
+    mx:
+      - name: mx1.tctech.com
+        priority: 10
+    records:
+      - value: "10"
+        type: "PTR"
+        fqdn: "www.tctech.com"
+      - value: "11"
+        type: "PTR"
+        fqdn: "mail.tctech.com"
+      - value: "12"
+        type: "PTR"
+        fqdn: "ftp.tctech.com"

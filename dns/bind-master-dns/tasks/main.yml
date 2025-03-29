@@ -5,18 +5,32 @@
     state: present
   loop: "{{ pkgs }}"
 
+- name: Including a zone vars
+  include_vars: "{{ item }}"
+  loop:
+    - forward-zone-vars.yml
+    - reverse-zone-vars.yml
+
 - name: Configuring a configuration file
   template:
-    src: ./master-named.conf.j2
+    src: master-named.conf.j2
     dest: "{{ conf_dir }}/named.conf"
   
-- name: configuring a zone file
+- name: configuring a forward-zone files
   template:
-    src: ./forward-zone.j2
-    dest: "{{ zone_directory }}/forward-{{ item.name }}"
+    src: forward-zone.j2
+    dest: "{{ zone_directory }}/{{ item.name }}-forward"
     mode: "0740"
     group: named
-  loop: "{{ zones }}"
+  loop: "{{ frw_zones }}"
+
+- name: configuring a forward-zone files
+  template:
+    src: reverse-zone.j2
+    dest: "{{ zone_directory }}/{{ item.name }}-reverse"
+    mode: "0740"
+    group: named
+  loop: "{{ rvs_zones }}"
 
 - name: Configuring a SELINUX
   selinux:
