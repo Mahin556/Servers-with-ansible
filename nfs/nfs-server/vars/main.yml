@@ -9,7 +9,7 @@ srvs:
   - rpcbind
 
 nfs_shares: 
-  - { share: "/nfs_share", hosts: "*", perms: "rw", sync: "sync", squash: "no_root_squash" }
-  - { share: "/mount/share", hosts: "*", perms: "rw", sync: "sync", squash: "no_root_squash" }
+  - { share: "/nfs_share", clients: "*", perms: "rw", sync: "sync", squash: "no_root_squash" }
+  - { share: "/mount/share", clients: "*", perms: "rw", sync: "sync", squash: "no_root_squash" }
 
 

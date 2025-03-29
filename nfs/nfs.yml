@@ -13,6 +13,7 @@
       when: inventory_hostname in groups["nfs_server"] and config_nfs_server == true
 
     - name: Configuring a NFS-client
-      include_tasks: nfs-client.yml
+      include_role: 
+        name: nfs-client
       when: inventory_hostname in groups['nfs_clients'] and config_nfs_clients == true
 

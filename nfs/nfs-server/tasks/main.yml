@@ -7,19 +7,10 @@
   
 - name: IS NFS SHARE EXIST?
   file:
-    path: "{{ nfs_share.share }}"
+    path: "{{ item.share }}"
     mode: "0777"
     state: directory
-  loop: "{{ nfs_share }}"   
-
-- name: MAKE SURE NFS SHARE HAVE SOME FILES ETC...
-  copy:
-    src: "{{ item }}"
-    dest: "{{ nfs_share }}"
-    remote_src: yes
-  loop:
-    - /etc/hosts
-    - /etc/resolv.conf
+  loop: "{{ nfs_shares }}"   
 
 - name: EXPORTING NFS SHARE.....
   template:

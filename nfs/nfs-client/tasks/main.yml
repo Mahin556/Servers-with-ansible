@@ -1,0 +1,18 @@
+---
+- name: Installing a required packages
+  yum:
+    name: nfs-utils
+    state: present
+  delegate_to: "{{ item.dest_host }}"
+  loop: "{{ nfs_mounts }}"
+  
+- name: Configuring a NFS-client
+  mount:
+    src: "{{ item.src }}"
+    path: "{{ item.dest }}"
+    state: "{{ item.state }}"
+    opts: rw,sync,hard
+    fstype: nfs
+  delegate_to: "{{ item.dest_host }}"
+  loop: "{{ nfs_mounts }}"
+

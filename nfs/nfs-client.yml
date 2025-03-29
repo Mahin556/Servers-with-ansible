@@ -1,8 +1,0 @@
- - name: Configuring a NFS-client
-   mount:
-     src: 192.168.29.228:/nfs_share
-     path: "/mount/nfs"
-     state: mounted
-     opts: "defaults,_netdev"
-     fstype: nfs
-    
