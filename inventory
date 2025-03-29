@@ -1,7 +1,10 @@
 [nfs_server]
-system1
+nfs-server ansible_host=system1
 [nfs_clients]
-system2
+nfs-client1 ansible_host=system2
+nfs-client2 ansible_host=system3
+nfs-client3 ansible_host=system4
+nfs-client4 ansible_host=system5
 
 [master_dns]
 system1

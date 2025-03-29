@@ -2,6 +2,6 @@
 # vars file for nfs-client
 
 nfs_mounts:
-  - { src: "192.168.29.228:/nfs_share", dest: "/mount/nfs1", dest_host: system4, state: "mounted" }
-  - { src: "192.168.29.228:/mount/share", dest: "/mount/nfs2", dest_host: system5, state: "mounted" }
+  - { src: "192.168.29.228:/nfs_share", dest: "/mount/nfs1", dest_host: nfs-client3, state: "mounted" }
+  - { src: "192.168.29.228:/mount/share", dest: "/mount/nfs2", dest_host: nfs-client4, state: "mounted" }
 

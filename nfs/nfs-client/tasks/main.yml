@@ -3,7 +3,7 @@
   yum:
     name: nfs-utils
     state: present
-  delegate_to: "{{ item.dest_host }}"
+  when: inventory_hostname == item.dest_host 
   loop: "{{ nfs_mounts }}"
   
 - name: Configuring a NFS-client
@@ -13,6 +13,6 @@
     state: "{{ item.state }}"
     opts: rw,sync,hard
     fstype: nfs
-  delegate_to: "{{ item.dest_host }}"
+  when: inventory_hostname == item.dest_host 
   loop: "{{ nfs_mounts }}"
 
