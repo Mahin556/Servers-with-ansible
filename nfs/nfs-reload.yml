@@ -1,0 +1,6 @@
+---
+- name: Reloading a nfs share
+  hosts: nfs_server
+  tasks:
+    - name: RELOADING....
+      command: exportfs -rv

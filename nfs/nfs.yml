@@ -1,18 +1,18 @@
 ---
 - name: Configuring a NFS-Server and Client
-  hosts: nfs_server
+  hosts: 
+    - nfs_server
+    - nfs_clients
+  vars:
+    - config_nfs_server: true
+    - config_nfs_clients: true
   tasks:
     - name: Configuring a NFS-server
       include_role:
         name: nfs-server
-      when: inventory_hostname == "system1" 
+      when: inventory_hostname in groups["nfs_server"] and config_nfs_server == true
 
     - name: Configuring a NFS-client
-      mount: 
-        src: 192.168.29.228:/nfs_share
-        path: "/mount/nfs"
-        state: mounted
-        opts: "defaults,_netdev"
-        fstype: nfs
-      when: inventory_hostname == "system2"
+      include_tasks: nfs-client.yml
+      when: inventory_hostname in groups['nfs_clients'] and config_nfs_clients == true
 

@@ -1,29 +1,38 @@
 ---
 - name: INSTALLING A REQUIRED PACKAGES
   yum:
-    name: 
-      - nfs-utils
-      - rpcbind
+    name: "{{ item }}"
     state: present
+  loop: "{{ pkgs }}"
   
 - name: IS NFS SHARE EXIST?
   file:
-    path: "{{ nfs_share }}"
+    path: "{{ nfs_share.share }}"
     mode: "0777"
     state: directory
-   
+  loop: "{{ nfs_share }}"   
+
 - name: MAKE SURE NFS SHARE HAVE SOME FILES ETC...
   copy:
     src: "{{ item }}"
     dest: "{{ nfs_share }}"
-    remote_src: no
-  with_fileglob:
-    - /etc/*.conf
+    remote_src: yes
+  loop:
+    - /etc/hosts
+    - /etc/resolv.conf
 
 - name: EXPORTING NFS SHARE.....
   template:
     src: exports.j2
     dest: /etc/exports
+
+# - name: Ensure required entries are made to hosts file. # Notes 1232
+  # lineinfile:
+  # path: /etc/exports
+  # state: present
+  # line: "{{ item }}"
+# with_items:
+  # - '/export/volumes  *(rw,no_root_squash,no_subtree_check,insecure)' 
 
 - name: SERVICE START & ENABLED
   service:
