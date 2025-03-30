@@ -1,0 +1,5 @@
+{% for mount in mounts %}
+{{ mount.mount_point }}	-{{ mount.perms }},sync -fstype=nfs,soft,{% if mount.timeout is defined %}timeout={{ mount.timeout }}{% endif %} {{ mount.nfs_server }}:{{ mount.nfs_share }}
+
+{% endfor %}
+

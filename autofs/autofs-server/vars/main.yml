@@ -3,10 +3,7 @@ srvs:
   - firewalld
 
 mounts:
-  - mount_dir: "/mount_dir"
-    mount_point: "mount_point"
-    timeout: "30"
-    perms: "rw"
-    nfs_server: "192.168.29.228"
-    nfs_share: "/nfs_share"
+ - { mount_dir: "/mount_dir", mount_point: "mount_point1", timeout: "30", perms: "rw", nfs_server: "192.168.29.228", nfs_share: "/nfs_share" }
+ - { mount_dir: "/mount_dir", mount_point: "mount_point2", perms: "rw", nfs_server: "192.168.29.228", nfs_share: "/mount/share" }
+
 
