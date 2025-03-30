@@ -10,15 +10,13 @@
 options {
 	listen-on port {{ listening_port }} { {% for interfaces in ipv4_interfaces %}{{ interfaces }}; {% endfor %}};
 	listen-on-v6 port {{ listening_port }} { {% for interfaces in ipv6_interfaces %}{{ interfaces }}; {% endfor %}};
-	directory 	"{{ zone_directory }}";
+	directory 	"/var/named";
 	dump-file 	"/var/named/data/cache_dump.db";
 	statistics-file "/var/named/data/named_stats.txt";
 	memstatistics-file "/var/named/data/named_mem_stats.txt";
 	secroots-file	"/var/named/data/named.secroots";
 	recursing-file	"/var/named/data/named.recursing";
 	allow-query     { {% for allowed in allow_query %}{{ allowed }}; {% endfor %}};
-	allow-transfer  { {% for allowed in allow_transfer %}{{ allowed }}; {% endfor %}};
-	
 	/* 
 	 - If you are building an AUTHORITATIVE DNS server, do NOT enable recursion.
 	 - If you are building a RECURSIVE (caching) DNS server, you need to enable 
@@ -55,45 +53,22 @@ zone "." IN {
 	file "named.ca";
 };
 
-{% if frw_zones is defined %}
-{% for zone in frw_zones %}
-zone "{{ zone.name }}" IN {
-	type {{ zone.type }};
-	file "{{ zone.name }}-forward";
-{% if zone.notify_on is defined and zone.notify_on | length > 0 %}
-        notify {{ zone.notify_on }};
-{% endif %}
-{% if zone.allow_transfer is defined and zone.allow_transfer | length > 0 %} 
-	allow-transfer { {% for host in zone.allow_transfer %}{{ host }}; {% endfor %}}; 
-{% endif %}
-{% if zone.also_notify is defined and zone.also_notify | length > 0 %}
-        also-notify { {% for host in zone.also_notify %}{{ host }}; {% endfor %}};
-{% endif %}
+// Enabled forward query
+zone "." IN {
+    	type forward;
+	forward only;
+	forwarders { {% for forwarder in forwarders %}{{ forwarder }}; {% endfor %}};
+};
 
-}; 
-
-{% endfor %}
-{% endif %}
-
-{% if rvs_zones is defined %}
+// Enabled reverse query
 {% for zone in rvs_zones %}
-zone "{{ zone.name }}" IN {
-        type {{ zone.type }};
-        file "{{ zone.name }}-reverse";
-{% if zone.notify_on is defined and zone.notify_on | length > 0 %}
-        notify {{ zone.notify_on }};
-{% endif %}
-{% if zone.allow_transfer is defined and zone.allow_transfer | length > 0 %}
-        allow-transfer { {% for host in zone.allow_transfer %}{{ host }}; {% endfor %}};
-{% endif %}
-{% if zone.also_notify is defined and zone.also_notify | length > 0 %}
-        also-notify { {% for host in zone.also_notify %}{{ host }}; {% endfor %}};
-{% endif %}
-
+zone "{{ zone }}" IN {
+        type forward;
+	forward only;
+	forwarders { {% for forwarder in forwarders %}{{ forwarder }}; {% endfor %}};
 };
 
 {% endfor %}
-{% endif %}
 
 include "/etc/named.rfc1912.zones";
 include "/etc/named.root.key";

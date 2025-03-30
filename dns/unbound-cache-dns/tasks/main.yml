@@ -8,7 +8,7 @@
 - name: Configure the unbound server
   template:
     src: cache.conf.j2
-    dest: "{{ unbound_conf_dir }}"
+    dest: "{{ unbound_conf }}"
   
 - name: Configuring a selinux
   selinux:

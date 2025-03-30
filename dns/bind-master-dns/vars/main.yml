@@ -31,9 +31,12 @@ allow_transfer: #list
 allow_update: #list
   - 192.168.29.167
 
+also_notify:
+
+also_update:
+
 recursive: "yes" #yes or no only
 
-notify_on: "yes"
 
 
 

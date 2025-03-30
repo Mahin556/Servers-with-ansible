@@ -1,20 +1,14 @@
 ---
-- name: Installing a Required packages
+- name: Installing a required packages
   yum:
     name: "{{ item }}"
     state: present
   loop: "{{ pkgs }}"
 
-- name: Including a zone variable files
-  include_vars: "{{ item }}"
-  loop:
-    - forward-zone-vars.yml
-    - reverse-zone-vars.yml
-
-- name: Configuring a configuration file
+- name: Configuring a bind cache server
   template:
-    src: ./slave-named.conf.j2
-    dest: "{{ conf_dir }}/named.conf"
+    src: named.conf.j2
+    dest: /etc/named.conf
 
 - name: Configuring a SELINUX
   selinux:
@@ -34,4 +28,3 @@
     permanent: true
     state: enabled
     immediate: true
-

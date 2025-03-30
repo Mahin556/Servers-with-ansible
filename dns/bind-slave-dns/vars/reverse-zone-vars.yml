@@ -1,0 +1,7 @@
+rvs_zones: #list
+  - name: "2.11.10.in-addr.arpa"
+    type: slave
+    master: 192.168.29.228
+  - name: "3.11.10.in-addr.arpa"
+    type: slave
+    master: 192.168.29.228

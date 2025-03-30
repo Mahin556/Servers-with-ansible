@@ -1,5 +1,11 @@
 rvs_zones: #list
   - name: "2.11.10.in-addr.arpa"
+    type: master
+    notify_on: "yes"
+    allow_transfer:
+      - 192.168.29.167
+    also_notify:
+      - 192.168.29.167
     soa: 
       ns: "ns1.webfix.com"
       mail: "mahin123@webfix.com"
@@ -9,9 +15,9 @@ rvs_zones: #list
       retry: 300
       expire: 1D
       minimum: 3H
-    type: master
     ns:
       - name: ns1.webfix.com
+      - name: ns2.webfix.com
     mx:
       - name: mx1.webfix.com
         priority: 10
@@ -27,6 +33,12 @@ rvs_zones: #list
         fqdn: "ftp.webfix.com"
 
   - name: "3.11.10.in-addr.arpa"
+    type: master
+    notify_on: "yes"
+    allow_transfer:
+      - 192.168.29.167
+    also_notify: 
+      - 192.168.29.167 
     soa: 
       ns: "ns1.tctech.com"
       mail: "mahin123@tctech.com"
@@ -36,9 +48,9 @@ rvs_zones: #list
       retry: 300
       expire: 1D
       minimum: 3H
-    type: master
     ns:
       - name: ns1.tctech.com
+      - name: ns2.tctech.com
     mx:
       - name: mx1.tctech.com
         priority: 10

@@ -1,0 +1,7 @@
+frw_zones: #list
+  - name: webfix.com
+    type: slave
+    master: 192.168.29.228
+  - name: tctech.com
+    type: slave
+    master: 192.168.29.228

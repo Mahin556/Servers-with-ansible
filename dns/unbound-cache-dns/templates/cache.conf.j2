@@ -55,11 +55,11 @@ server:
 	# interface: 192.0.2.154
 	# interface: 192.0.2.154@5003
 	# interface: 2001:DB8::5
-	{% if interfaces is defined %}
-	{% for interface in interfaces %}
+{% if interfaces is defined %}
+{% for interface in interfaces %}
 	interface: {{ interface }}
-	{% endfor %}
-	{% endif %}
+{% endfor %}
+{% endif %}
 	
 	#for dns over tls and raw dns over port 80
 	# interface: 0.0.0.0@443
@@ -297,11 +297,11 @@ server:
 	# access-control: ::0/0 refuse
 	# access-control: ::1 allow
 	# access-control: ::ffff:127.0.0.1 allow
-	{% if access_control_list is defined %}
-	{% for network in access_control_list %}
+{% if access_control_list is defined %}
+{% for network in access_control_list %}
 	access-control: {{ network.network | default('0.0.0.0/0') }} {{ network.state | default('refuse') }}
-	{% endfor %}
-	{% endif %}
+{% endfor %}
+{% endif %}
 
 	# tag access-control with list of tags (in "" with spaces between)
 	# Clients using this access control element use localzones that
@@ -588,11 +588,11 @@ server:
 	auto-trust-anchor-file: "/var/lib/unbound/root.key"
 
 	# Ignore chain of trust. Domain is treated as insecure.
-	{% if allowed_domains is defined %}
-	{% for domain in allowed_domains %}
-	domain-insecure: {{ domain | default('example.com') }}
-	{% endfor %}
-	{% endif %}
+{% if allowed_domains is defined %}
+{% for domain in allowed_domains %}
+	domain-insecure: "{{ domain | default('example.com') }}"
+{% endfor %}
+{% endif %}
 
 	# Override the date for validation with a specific fixed date.
 	# Do not set this unless you are debugging signature inception
@@ -1071,9 +1071,9 @@ include: /etc/unbound/conf.d/*.conf
 #	forward-no-cache: no
 forward-zone:
  	name: "."
- 	{% for dns_address in dns_addresses %}
+{% for dns_address in dns_addresses %}
 	forward-addr: {{ dns_address | default('8.8.8.8') }}
-	{% endfor %}	
+{% endfor %}	
 #
 # You can now also dynamically create and delete forward-zone's using
 # unbound-control forward_add domain.com 1.2.3.4 5.6.7.8

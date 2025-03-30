@@ -18,7 +18,6 @@ options {
 	recursing-file	"/var/named/data/named.recursing";
 	allow-query     { {% for allowed in allow_query %}{{ allowed }}; {% endfor %}};
 	allow-transfer  { {% for allowed in allow_transfer %}{{ allowed }}; {% endfor %}};
-	allow-update 	{ {% for allowed in allow_update %}{{ allowed }}; {% endfor %}};
 	
 	/* 
 	 - If you are building an AUTHORITATIVE DNS server, do NOT enable recursion.
@@ -56,13 +55,23 @@ zone "." IN {
 	file "named.ca";
 };
 
-{% for zone in zones %}
+{% for zone in frw_zones %}
 zone "{{ zone.name }}" IN {
 	type {{ zone.type }};
-	file "{{ slv_zone_dir}}/forward-{{ zone.name }}";
+	file "{{ slv_zone_dir}}/{{ zone.name }}-forward";
 	masters { {{ zone.master }}; };
-	notify {{ notify_on }};
-}; 
+
+};
+
+{% endfor %}
+
+{% for zone in rvs_zones %}
+zone "{{ zone.name }}" IN {
+        type {{ zone.type }};
+        file "{{ slv_zone_dir}}/{{ zone.name }}-reverse";
+        masters { {{ zone.master }}; };
+
+};
 
 {% endfor %}
 

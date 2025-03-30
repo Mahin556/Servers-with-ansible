@@ -11,7 +11,7 @@ interfaces:
 
 listening_port: 53
 
-unbound_conf_dir: "/etc/unbound"
+unbound_conf: "/etc/unbound/unbound.conf"
 
 access_control_list:
   - network: 192.168.29.0/24

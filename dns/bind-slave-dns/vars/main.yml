@@ -23,21 +23,9 @@ allow_query: #list
 allow_transfer: #list
   - none
 
-allow_update: #list
-  - none
-
 recursive: "yes" #yes or no only
 
-zones: #list
-  - name: webfix.com
-    type: slave
-    master: 192.168.29.228
-  - name: tctech.com
-    type: slave
-    master: 192.168.29.228
-
-notify_on: "no"
 conf_dir: /etc
 zone_directory: "/var/named"
-slv_zone_dir: "slaves/"
+slv_zone_dir: "slaves"
 

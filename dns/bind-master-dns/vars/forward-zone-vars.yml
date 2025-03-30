@@ -1,5 +1,11 @@
 frw_zones: #list
   - name: webfix.com
+    type: master
+    notify_on: "yes"
+    allow_transfer:
+      - 192.168.29.167
+    also_notify: 
+      - 192.168.29.167  
     soa: 
       ns: "ns1.webfix.com"
       mail: "mahin123@webfix.com"
@@ -9,16 +15,19 @@ frw_zones: #list
       retry: 300
       expire: 1D
       minimum: 3H
-    type: master
     ns:
       - name: ns1.webfix.com
+      - name: ns2.webfix.com
     mx:
       - name: mx1.webfix.com
         priority: 10
     records:
       - name: "ns1"
         type: "A"
-        value: "192.168.29.18"
+        value: "192.168.29.228"
+      - name: "ns2"
+        type: "A"
+        value: "192.168.29.167"
       - name: "mx1"
         type: "A"
         value: "192.168.29.18"
@@ -27,6 +36,12 @@ frw_zones: #list
         value: "192.168.29.18"
 
   - name: tctech.com
+    type: master
+    notify_on: "yes"
+    allow_transfer:  
+      - 192.168.29.167
+    also_notify: 
+      - 192.168.29.167 
     soa: 
       ns: "ns1.tctech.com"
       mail: "mahin123@tctech.com"
@@ -36,20 +51,24 @@ frw_zones: #list
       retry: 300
       expire: 1D
       minimum: 3H
-    type: master
     ns:
       - name: ns1.tctech.com
+      - name: ns2.tctech.com
     mx:
       - name: mx1.tctech.com
         priority: 10
     records:
       - name: "ns1"
         type: "A"
-        value: "192.168.29.206"
+        value: "192.168.29.228"
+      - name: "ns2"
+        type: "A"
+        value: "192.168.29.167"
       - name: "mx1"
         type: "A"
         value: "192.168.29.206"
       - name: "www"
         type: "A"
         value: "192.168.29.206"
-  
+ 
+
