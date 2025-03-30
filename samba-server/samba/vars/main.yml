@@ -3,13 +3,9 @@ pkgs:
   - samba
   - samba-common
   - samba-client
+
 group:
   - smbgroup
-
-user_accounts:
-  - { name: "smbuser1", group: "smbgroup", home: "true", passwd: "smb" }
-  - { name: "smbuser2", home: "false", passwd: "smb" }
-
 
     #[sharename] → Defines the name of the shared folder.
     #path = /path/to/share → Sets the directory being shared.
@@ -34,10 +30,10 @@ shared_dirs:
       comment: "demo",
       browseable: "yes",
       read_only: "yes",
-      write_list: [ "@smbgroup", "smbuser2" ], #Always List
-      valid_users: [], #Always List
+      write_list: [ "@smbgroup" ], #Always List
+      valid_users: [ "smbuser1" ], #Always List
       guest_ok: "",
-      hosts_allow: [], #Always List
+      hosts_allow: [ "192.168.29.0/24" ], #Always List
       create_mask: "0444",
       directory_mask: "0666"
 }

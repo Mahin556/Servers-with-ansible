@@ -5,6 +5,9 @@
     state: present
   loop: "{{ pkgs }}"
 
+- name: Including user account file - users-vault.yml
+  include_vars: "users-vault.yml"
+
 - name: Groups allowed
   group:
     name: "{{ item }}"
