@@ -1,0 +1,107 @@
+---
+- name: Installing a NIS Server packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ nis_server_packages }}"
+  notify:
+    - restart ypserv
+    - restart rpcbind
+
+- name: Setting up a hostname for nis server
+  hostname:
+    name: "{{ nis_server_hostname }}"
+
+- name: Setting up a ypdomainname
+  command: "ypdomainname {{ nis_domain }}"  #domainname nis.example.com
+
+- name: hosts file
+  lineinfile:
+    path: /etc/hosts
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertbefore: EOF
+  loop:
+    - { regexp: "192.168.1.94 .*", line: "192.168.1.94 {{ nis_server_hostname }}" }
+    - { regexp: "192.168.1.93 .*", line: "192.168.1.93 {{ nis_client_hostname }}" }
+
+- name: Fix SELinux context on /etc/password
+  command: "/usr/bin/chcon -h system_u:object_r:passwd_file_t:s0 /etc/passwd"
+
+- name: Fix SELinux context on /etc/shadow
+  command: "/usr/bin/chcon -h system_u:object_r:shadow_t:s0 /etc/shadow"
+
+- name: configuring a securenets.conf file on nis server
+  template:
+    src: securenets.j2
+    dest: /var/yp/securenets
+    owner: root
+    group: root
+    mode: "0644"
+  notify:
+    - restart ypserv
+    - restart rpcbind
+
+- name: add NISDOMAIN to sysconfig/network
+  lineinfile:
+    path: /etc/sysconfig/network
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backup: yes
+    insertbefore: EOF
+    create: yes
+    group: root
+    owner: root
+    mode: 0644
+  loop:
+    - { regexp: 'NISDOMAIN=.*', line: 'NISDOMAIN={{ nis_domain }}' }
+    - { regexp: 'YPSERV_ARGS=.*', line: 'YPSERV_ARGS="-p {{ ypserv_port }}"' }
+    - { regexp: 'YPXFRD_ARGS=.*', line: 'YPXFRD_ARGS="-p {{ ypxfrd_port }}"' }
+  notify:
+    - restart rpcbind
+    - restart ypserv
+
+- name: making a yppasswdd file
+  template:
+    src: yppasswdd.j2
+    dest: /etc/sysconfig/yppasswdd
+  notify: 
+    - restart yppasswdd
+
+- name : template in yp Make cronjob
+  template:
+    src: yp.cron.j2
+    dest: /etc/cron.hourly/yp.cron
+    mode: 0755
+    owner: root
+    group: root
+    backup: no
+
+- name: Starting a services on NIS server
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items: "{{ nis_server_daemons }}"
+
+- name: Configuring a firewall
+  firewalld:
+    port: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop:
+    - "944/tcp"
+    - "944/udp"
+    - "945/tcp"
+    - "945/udp"
+    - "946/udp"
+
+- name: enable and start nscd
+  service:
+    name: nscd
+    enabled: "{{ nis_nscd_enabled }}"
+    state: "{{ nis_nscd_state }}"
+  when: nis_manage_nscd|bool
+
+

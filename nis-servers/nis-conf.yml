@@ -1,7 +1,10 @@
 ---
 - name: SETUP NIS
   hosts: nis-systems
-  become: true
+  become: yes
+  vars:
+    nis_server_enabled: true
+    nis_client_enabled: true
   tasks:
     - name: CONFIGURING A NIS
       when: ( ansible_distribution | lower in ['centos','redhat'] ) and ansible_distribution_major_version == '7'
@@ -9,9 +12,11 @@
         - name: CONFIGURING A NIS-SERVER
           include_role:
             name: nis-server
-          when: inventory_hostname in groups['nis-server']
+          when: inventory_hostname in groups['nis-server'] and nis_server_enabled == true
         - name: CONFIGURING A NIS-CLIENT
           include_role:
             name: nis-client
-          when: inventory_hostname in groups['nis-client']
-      ignore_errors: true
+          when: inventory_hostname in groups['nis-client'] and nis_client_enabled == true
+      ignore_errors: false
+
+

@@ -1,32 +1,24 @@
 ---
 - name: restart ypserv
   service: 
-    name: ypserv
+    name: ypserv 
     state: restarted
-
-- name: restart nfs-server
-  service:
-    name: nfs-server
-    state: restarted
+  when: nis_server|bool
 
 - name: restart ypbind
-  service:
-    name: ypbind
+  service: 
+    name: ypbind 
     state: restarted
+  when: not nis_server|bool
 
 - name: restart rpcbind
-  service:
-    name: rpcbind
+  service: 
+    name: rpcbind 
     state: restarted
 
 - name: restart yppasswdd
-  service:
-    name: yppasswdd
-    state: restarted
-
-- name: restart xinetd
-  service:
-    name: xinetd
+  service: 
+    name: yppasswdd 
     state: restarted
 
 

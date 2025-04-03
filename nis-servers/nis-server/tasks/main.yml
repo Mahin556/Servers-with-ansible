@@ -1,93 +1,10 @@
 ---
-- name: Installing a required packages
-  yum:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ pkgs }}"
+- name: Configuring a nis server
+  include_tasks: install.yml
 
-- name: Starting a services
-  service:
-    name: "{{ item }}"
-    state: started
-    enabled: true
-  loop:
-    - ypserv
-    - nfs-server
-    - rpcbind
-    - yppasswdd
-    - firewalld
-    - xinetd
+- name: initializing a nis server
+  include_tasks: initialize.yml
+  when: nis_initialize ==  true
 
-- name: Setting up a hostname
-  hostname:
-    name: "{{ nis_server_hostname }}"
 
-- name: Setting up a ypdomainname
-  command: "ypdomainname {{ nis_domain }}"  #domainname nis.example.com
-
-- name: Permanent network setup
-  template:
-    src: network.j2
-    dest: /etc/sysconfig/network
-    owner: root
-    group: root
-    mode: "0777"
-
-- name: hosts file
-  template:
-    src: hosts.j2
-    dest: /etc/hosts
-
-- name: Secure networks
-  template:
-    src: securenets.j2
-    dest: /var/yp/securenets
-    owner: root
-    group: root
-    mode: "0777"
-
-- name: modify /etc/nsswitch
-  template:
-    src: nsswitch.conf.j2
-    dest: /etc/nsswitch.conf
-    owner: root
-    group: root
-    mode: "0777"
-
-- name: modify /etc/yp.conf
-  template: 
-    src: yp.conf.j2
-    dest: /etc/yp.conf
-    owner: root
-    group: root
-    mode: "0777"
-  notify: restart ypserv
-      
-- name: Make NIS MAP #MAKEFILE
-  command: make -C /var/yp
-  changed_when: true
-
-- name: making a yppasswdd file
-  template: 
-    src: yppasswdd.j2
-    dest: /etc/sysconfig/yppasswdd
-  notify: restart yppasswdd
-
-- name: Configuring a firewall
-  firewalld:
-    port: "{{ item }}"
-    state: enabled
-    permanent: true
-    immediate: true
-  loop:
-    - "944/tcp"
-    - "944/udp"
-    - "945/tcp"
-    - "945/udp"
-    - "946/udp"
-
-- name: Selinux ---> permissive
-  selinux:
-    policy: targeted
-    state: permissive
 

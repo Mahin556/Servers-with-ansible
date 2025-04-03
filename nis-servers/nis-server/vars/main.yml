@@ -1,18 +1,34 @@
 ---
-pkgs:
+nis_server_packages:
   - ypserv
-  - rpcbind
   - make
-  - nfs-utils
-  - xinetd
+  - rpcbind
+  - nscd
+
+nis_server_daemons:
+  - ypserv
+  - yppasswdd
+  - ypxfrd
+  - rpcbind
+  - firewalld
+
+nis_manage_nscd: True
+nis_nscd_enabled: "true"
+nis_nscd_state: "started"
+
+nis_initialize: true
 
 nis_domain: "example.com"
+nis_server_address: "192.168.1.94"
 nis_server_hostname: "nisserver.{{ nis_domain }}"
+nis_client_hostname: "nisclient1.{{ nis_domain }}"
 
 ypserv_port: "944"
 ypxfrd_port: "945"
 yppasswdd_port: "946"
 
-nis_secure_network:
-  network_address: "192.168.29.0"
-  subnet_mask: "255.255.255.0"
+nis_secure_networks:
+  - network: "192.168.1.0"
+    netmask: "255.255.255.0"
+  - network: "192.168.29.0"
+    netmask: "255.255.255.0"

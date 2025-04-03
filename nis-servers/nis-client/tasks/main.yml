@@ -1,64 +1,84 @@
 ---
-- name: Installing a required packages
+- name: Installing a NIS client packages
   yum:
     name: "{{ item }}"
     state: present
-  loop: "{{ pkgs }}"
+  with_items: "{{ nis_client_packages }}"
+  notify:
+    - restart ypbind
+    - restart rpcbind
 
-- name: Starting a services
-  service:
-    name: "{{ item }}"
-    state: started
-    enabled: true
-  loop: 
-    - autofs
-    - firewalld
-
-- name: Setting up a hostname
+- name: Setting up a hostname for nis client
   hostname:
     name: "{{ nis_client_hostname }}"
 
 - name: Setting up a ypdomainname
   command: "ypdomainname {{ nis_domain }}"  #domainname nis.example.com
 
-- name: Permanent network setup
-  template:
-    src: network.j2
-    dest: /etc/sysconfig/network
-    owner: root
-    group: root
-    mode: "0777"
-
 - name: hosts file
-  template:
-    src: hosts.j2
-    dest: /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    insertbefore: EOF
+  loop:
+    - { regexp: "192.168.1.94 .*", line: "192.168.1.94 {{ nis_server_hostname }}" }
+    - { regexp: "192.168.1.93 .*", line: "192.168.1.93 {{ nis_client_hostname }}" }
 
-- name: Secure networks
+- name: configuring a yp.conf file on nis client
   template:
-    src: securenets.j2
-    dest: /var/yp/securenets
+    src: yp.conf.j2
+    dest: /etc/yp.conf
     owner: root
     group: root
-    mode: "0777"
+    mode: "0644"
+  notify:
+    - restart ypbind
 
-- name: modify /etc/nsswitch
+- name: configuring a nsswitch.conf file on nis client
   template:
     src: nsswitch.conf.j2
     dest: /etc/nsswitch.conf
     owner: root
     group: root
-    mode: "0777"
+    mode: "0644"
 
-- name: client of nis-server
-  script: client.sh
-  notify: restart ypbind  
+- name: add NISDOMAIN to sysconfig/network
+  lineinfile:
+    path: /etc/sysconfig/network
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    backup: yes
+    insertbefore: EOF
+    create: yes
+    group: root
+    owner: root
+    mode: 0644
+  loop:
+    - { regexp: 'NISDOMAIN=.*', line: 'NISDOMAIN={{ nis_domain }}' }
+  notify:
+    - restart rpcbind
+    - restart ypbind
 
-- name: Selinux ---> permissive
+- name: making selinux permissive
   selinux:
     policy: targeted
     state: permissive
 
-- name: verify
-  command: "cat /etc/yp.conf"
+- name: client of nis-server
+  script: client.sh
+  notify: restart ypbind
 
+- name: Starting a services on NIS client
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items: "{{ nis_client_daemons }}"
+  
+- name: enable and start nscd
+  service:
+    name: nscd
+    enabled: "{{ nis_nscd_enabled }}"
+    state: "{{ nis_nscd_state }}"
+  when: nis_manage_nscd|bool
