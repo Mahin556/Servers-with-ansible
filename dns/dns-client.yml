@@ -4,7 +4,7 @@
   vars:
     auth_dns_ip: 192.168.29.228
     slv_dns_ip: 192.168.29.167
-    cache_dns_ip: 192.168.29.104
+    cache_dns_ip: 192.168.29.206
     resolver_file: "/etc/resolv.conf"
   tasks:
     - name: Configuring a resolve.conf file with authorative and slave DNS server
