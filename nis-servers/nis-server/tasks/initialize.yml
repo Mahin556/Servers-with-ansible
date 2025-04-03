@@ -1,27 +1,4 @@
 ---
-#- name: configuring a makefile
-#  template:
-#    src: Makefile.j2
-#    dest: /var/yp/Makefile
-#    backup: yes
-#  when: nis_initialize|bool
-#  notify:
-#    - restart ypserv
-
-#- name: template in a patched ypinit script that has the ctrl d prompt disabled that creates /var/yp/.csc
-#  template:
-#    src: ypinit_csc.j2
-#    dest: /usr/lib64/yp/ypinit_csc
-#    mode: 0755
-#    owner: root
-#    group: root
-#    backup: no
-#  when: nis_initialize|bool
-
-#- name: initialize the master nis server with ypinit_csc if /var/yp/.csc does not exist
-#  command: /usr/lib64/yp/ypinit_csc -m creates=/var/yp/.csc
-#  when: nis_initialize|bool and ansible_virtualization_type != "docker"
-
 
 - name: Initialize NIS Master
   ansible.builtin.shell:
